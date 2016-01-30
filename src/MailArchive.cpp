@@ -105,6 +105,7 @@ void MailArchive::archiveFolder(const QString& folder)
         qDebug() << mes;
         Core::Msg msg(mes.toStdString());
         archiveMsg(msg);
+        db.commit();
     }
 }
 
@@ -145,7 +146,7 @@ void MailArchive::archiveMsg(Core::Msg& msgFile)
         qDebug() << q.lastQuery();
         
         
-        if(transactionCounter==50u) {
+        if(transactionCounter==299u) {
             db.commit();
             transactionCounter=0;
             //try to clear sqlite state...

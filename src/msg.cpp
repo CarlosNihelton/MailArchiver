@@ -299,6 +299,7 @@ const std::string Msg::getStringFromStream(const char* stream)
 //Destructor
 Msg::~Msg()
 {
+    close();
 }
 
 //Move semantics
