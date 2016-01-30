@@ -25,7 +25,7 @@ project(MailArchiver)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Sql REQUIRED)
 #find_package(KF5Archive REQUIRED)
-find_package(Boost 1.50 COMPONENTS iostreams REQUIRED)
+find_package(Boost 1.50 COMPONENTS iostreams serialization REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
