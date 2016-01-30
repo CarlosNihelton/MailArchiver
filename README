@@ -23,6 +23,39 @@ POLE has the advantage that it's portable (i.e you can read or write a
 structured storage in any supported platform), you don't need to rely on Windows
 library. 
 
+* MD5-CC - C++/object oriented translation and modification of MD5. <>
+
+Version: 1.00 (28 Aug 95)
+Version: 1.02 (22 Sep 97)
+
+ Translation and modification (c) 1995 by Mordechai T. Abzug 
+ Thanks to Martin Cleaver for for making it happy on Windows NT and Solaris.
+
+ This translation/ modification is provided "as is," without express or 
+ implied warranty of any kind.
+
+ The translator/ modifier does not claim (1) that MD5 will do what you think 
+ it does; (2) that this translation/ modification is accurate; or (3) that 
+ this software is "merchantible."  (Language for this disclaimer partially 
+ copied from the disclaimer below).
+
+Based on:
+
+   MD5.H - header file for MD5C.C
+   MD5C.C - RSA Data Security, Inc., MD5 message-digest algorithm
+   MDDRIVER.C - test driver for MD2, MD4 and MD5
+
+   Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All
+rights reserved.
+
+* Boost - Boost provides free peer-reviewed portable C++ source libraries. <http://www.boost.org/>
+
+We emphasize libraries that work well with the C++ Standard Library. Boost libraries are intended to be widely useful, and usable across a broad spectrum of applications. The Boost license encourages both commercial and non-commercial use.
+
+We aim to establish "existing practice" and provide reference implementations so that Boost libraries are suitable for eventual standardization. Ten Boost libraries are included in the C++ Standards Committee's Library Technical Report (TR1) and in the new C++11 Standard. C++11 also includes several more Boost libraries in addition to those from TR1. More Boost libraries are proposed for standardization in C++17.
+
+Since 2006 an intimate week long annual conference related to Boost called C++ Now has been held in Aspen, Colorado each May. Boost has been a participant in the annual Google Summer of Code since 2007.
+
 *Qt <http://www.qt.io>
 Qt is a cross-platform application development framework for desktop, embedded and mobile. Supported Platforms include Linux, OS X, Windows, VxWorks, QNX, Android, iOS, BlackBerry, Sailfish OS and others.
 
