@@ -19,14 +19,32 @@
 *                                                                           *
 ****************************************************************************/
 
-#include "SingleApp.h"
-#include "MailArchiverWidget.h"
 
-int main(int argc, char** argv)
-{
+#ifndef SINGLEAPP_H
+#define SINGLEAPP_H
 
-    SingleApp app(argc, argv);
-    MailArchiverWidget mailarchiver;
-    mailarchiver.show();
-    return app.exec();
-}
+#include <QApplication>
+#include <QSharedMemory>
+#include <QMessageBox>
+
+class SingleApp {
+
+public:
+    SingleApp(int& argc, char** argv);
+    int exec() {
+        return theApp.exec();
+    }
+    ~SingleApp()=default;
+
+    //Disable copy and move.
+    SingleApp(const SingleApp&)=delete;
+    SingleApp& operator=(const SingleApp&)=delete;
+    SingleApp(SingleApp&&)=delete;
+    SingleApp& operator=(SingleApp&&)=delete;
+
+private:
+    QSharedMemory m_sharedMem;
+    QApplication theApp;
+};
+
+#endif // SINGLEAPP_H

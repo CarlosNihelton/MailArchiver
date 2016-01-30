@@ -20,13 +20,13 @@
 ****************************************************************************/
 
 #include "SingleApp.h"
-#include "MailArchiverWidget.h"
 
-int main(int argc, char** argv)
+SingleApp::SingleApp(int& argc, char** argv) :  m_sharedMem{"org.olivec.MailArchiverApplication.com"},
+                                                theApp(argc,argv)
 {
-
-    SingleApp app(argc, argv);
-    MailArchiverWidget mailarchiver;
-    mailarchiver.show();
-    return app.exec();
+    if(!m_sharedMem.create(1)) {
+        QMessageBox::critical(nullptr, QObject::tr("Mail Archive: Cannot Start!"),
+        QObject::tr("An instance of this application is running!"));
+        exit(0);
+    }
 }
