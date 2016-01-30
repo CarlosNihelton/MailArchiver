@@ -38,7 +38,8 @@ class MailArchiverWidget : public QMainWindow
 public:
     MailArchiverWidget();
     virtual ~MailArchiverWidget();
-
+    static const int ExitCodeRestartApp=-54321;
+    
 protected slots:
     //Actions
     //void onClose(); //Not required. Directly connected to the widget close handler.
@@ -55,6 +56,9 @@ protected slots:
     
     //Widget reactors
     void onListViewDoubleClicked(const QModelIndex& index);
+    
+    //slot for restarting the application.
+    void onRestartApplication();
     
 private:
     Ui::MailArchiverWidget* ui;

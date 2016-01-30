@@ -49,6 +49,7 @@ private:
     QSqlQueryModel* m_Tags;
     
     QSqlDatabase db;
+    unsigned int transactionCounter;
     
 public:
     MailArchive(const QString& filename);

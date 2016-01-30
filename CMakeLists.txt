@@ -24,7 +24,8 @@ project(MailArchiver)
 
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Sql REQUIRED)
-find_package(KF5Archive REQUIRED)
+#find_package(KF5Archive REQUIRED)
+find_package(Boost 1.50 COMPONENTS iostreams REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -32,7 +33,9 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
-include_directories(${Qt5Widgets_INCLUDES} ${Qt5Sql_INCLUDES} ${CMAKE_BINARY_DIR} "${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/3rd/pole" "${PROJECT_SOURCE_DIR}/3rd/md5-cc")
+include_directories(${Qt5Widgets_INCLUDES} ${Qt5Sql_INCLUDES} ${CMAKE_BINARY_DIR})
+include_directories(${Boost_INCLUDE_DIR})
+include_directories("${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/3rd/pole" "${PROJECT_SOURCE_DIR}/3rd/md5-cc")
 add_definitions(${Qt5Widgets_DEFINITIONS})
 set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 
@@ -41,7 +44,7 @@ file(GLOB MailArchiver_SRCS "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_
     
 add_executable(MailArchiver ${MailArchiver_SRCS} ${MailQRC})
 target_compile_features(MailArchiver PRIVATE cxx_nullptr cxx_range_for)
-target_link_libraries(MailArchiver ${Qt5Widgets_LIBRARIES} ${Qt5Sql_LIBRARIES} z pthread KF5::Archive)
+target_link_libraries(MailArchiver ${Qt5Widgets_LIBRARIES} ${Qt5Sql_LIBRARIES} ${Boost_LIBRARIES} pthread)
 set_property(TARGET MailArchiver PROPERTY CXX_STANDARD 14)
 
 install(TARGETS MailArchiver RUNTIME DESTINATION bin)

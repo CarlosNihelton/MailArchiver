@@ -28,14 +28,6 @@
 //local
 #include "pole.h"
 
-//other
-#include <zlib.h>
-
-namespace Utils{
-    std::string compress_string(const std::string& str, int compressionlevel = Z_BEST_COMPRESSION);
-    std::string decompress_string(const std::string& str);
-}
-
 namespace Core {
   
 class Msg
@@ -52,7 +44,6 @@ private:
   std::string m_date;
   std::string m_body;
   std::string m_hash;
-  std::string m_compressed;
   bool m_hasAttachments;
     
 
@@ -82,7 +73,6 @@ public:
     const std::string date();
     const std::string& body();
     const std::string hash();
-    const std::string& selfCompress();
     
     bool hasAttachments();
     

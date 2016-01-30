@@ -34,11 +34,12 @@
 #include <QDebug>
 #include <QSqlError>
 //local
+#include "utils.h"
 #include "MailListModel.h"
 #include "MailArchive.h"
-#include "KCompressionDevice"
+//#include "KCompressionDevice"
 
-MailArchive::MailArchive(const QString& filename)
+MailArchive::MailArchive(const QString& filename) : transactionCounter{0}
 {
     openFile(filename);
     m_Folders = new QSqlQueryModel;
@@ -110,12 +111,13 @@ void MailArchive::archiveFolder(const QString& folder)
 void MailArchive::archiveMsg(Core::Msg& msgFile)
 {
     QSqlQuery q(db);
-    q.prepare("SELECT COUNT(FROM_NAME) FROM MailArchive WHERE MESSAGEID=?");
+    q.prepare("SELECT COUNT(MESSAGEID) FROM MailArchive WHERE MESSAGEID=?");
     q.addBindValue(msgFile.hash().c_str());
     q.exec();
-
+    q.next();
     if(q.value(0).toInt()==0)
     {
+        if(transactionCounter==0) db.transaction();
 
         q.prepare("INSERT INTO MailArchive (MESSAGEID, FROM_NAME, FROM_ADDR, TO_NAME, TO_ADDR, CC, BCC, SUBJECT, CWHEN, CONTENT, COMPRESSED, HASATTACH) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
         q.addBindValue(msgFile.hash().c_str());
@@ -128,14 +130,32 @@ void MailArchive::archiveMsg(Core::Msg& msgFile)
         q.addBindValue(msgFile.subject().c_str());
         q.addBindValue(msgFile.date().c_str());
         q.addBindValue(msgFile.body().c_str());
-        QByteArray array(msgFile.selfCompress().data(), msgFile.selfCompress().size());
-        qDebug() << array.size();
-        q.addBindValue(array, QSql::In | QSql::Binary);
-        q.addBindValue(msgFile.hasAttachments()?'1':'0');
+        std::string compressed = Utils::string_compress_encode_file(msgFile.fileName());
+        qDebug() << compressed.size();
+        q.addBindValue(compressed.data(), QSql::In | QSql::Binary);
+        q.addBindValue(msgFile.hasAttachments());
 
-        q.exec();
+        if(q.exec()) ++transactionCounter;
+        else{
+            qDebug() << q.lastError();
+            db.close();
+            db.open();
+        }
+        
         qDebug() << q.lastQuery();
-        qDebug() << q.lastError().text();
+        
+        
+        if(transactionCounter==50u) {
+            db.commit();
+            transactionCounter=0;
+            //try to clear sqlite state...
+            q.exec("SELECT MESSAGEID FROM MailArchive LIMIT 1");
+            q.next();
+            qDebug() << q.value(0).toString();
+        }
+    }
+    else{
+        qDebug() << "This email already exists into the archive: " << msgFile.hash().c_str();
     }
 }
 
@@ -155,9 +175,7 @@ void MailArchive::saveMsgAsFile(const QString& messageId, const QString& fileNam
     if(q.next()) {
         QByteArray array(q.value(0).toByteArray());
         std::string input(array.data(), array.size());
-        std::ofstream outFile(fileName.toUtf8().data(), std::ios::binary);
-        std::string output(Utils::decompress_string(input));
-        outFile.write(output.data(), output.size());
+        Utils::string_decompress_decode_to_file(input, fileName.toStdString());
     }
 
 }
