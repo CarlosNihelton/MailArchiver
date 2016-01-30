@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="search">search.png</file>
+    <file alias="more">more.png</file>
+    <file alias="opFd">open_folder.png</file>
+    <file alias="clFd">closed_folder.png</file>
+    <file alias="hasatt">./hasatt.png</file>
+    <file alias="noatt">./noatt.png</file>
+    <file alias="lock">./lock.png</file>
+  </qresource>
+</RCC>

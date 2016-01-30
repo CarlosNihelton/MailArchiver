@@ -1,0 +1,32 @@
+Mail Archiver - A solution to store and manage offline e-mail files.   
+Copyright (C) 2015-2016 Carlos Nihelton <carlosnsoliveira@gmail.com>   
+
+This program was created in an attempt to help management and storage of e-mail files
+offline stored for general purposes. In this current implemantation it deals with Outlook(R)
+files only, but it can easily be extended to other formats too.
+
+The 3rd party source code and libraries used in this project are referenced at the section <3rd Parties>
+
+
+3rd Parties
+
+The following 3rd party code used in this project can be obtained in the following links:
+
+* POLE - portable library for structured storage <http://www.dimin.net/software/pole/>
+
+POLE is a portable C++ library to create and read structured storage. With a
+structured storage, you can store files inside another file, or you can even
+create complex directory tree, if you want to. The structured storage created by
+POLE is compatible with Microsoft structured storage, also sometimes called as
+OLE Compound Document, which are used among others in Microsoft Office. However,
+POLE has the advantage that it's portable (i.e you can read or write a
+structured storage in any supported platform), you don't need to rely on Windows
+library. 
+
+*Qt <http://www.qt.io>
+Qt is a cross-platform application development framework for desktop, embedded and mobile. Supported Platforms include Linux, OS X, Windows, VxWorks, QNX, Android, iOS, BlackBerry, Sailfish OS and others.
+
+Qt is not a programming language by its own. It is a framework written in C++. A preprocessor, the MOC (Meta-Object Compiler), is used to extend the C++ language with features like signals and slots. Before the compilation step, the MOC parses the source files written in Qt-extended C++ and generates standard compliant C++ sources from them. Thus the framework itself and applications/libraries using it can be compiled by any standard compliant C++ compiler like Clang, GCC, ICC, MinGW and MSVC. 
+
+Outlook (TM) is a trademark of Microsoft Corporation
+Qt(TM) is a trademark of The Qt Company
