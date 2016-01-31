@@ -165,6 +165,9 @@ border-style: solid;
         </item>
         <item row="2" column="1" colspan="7">
          <widget class="QListView" name="mailListView">
+          <property name="contextMenuPolicy">
+           <enum>Qt::CustomContextMenu</enum>
+          </property>
           <property name="styleSheet">
            <string notr="true"/>
           </property>
@@ -332,7 +335,33 @@ border-style: solid;
   </action>
   <action name="actionArchiveEntireFolder">
    <property name="text">
-    <string>Archive entire folder</string>
+    <string>Archive &amp;entire folder</string>
+   </property>
+  </action>
+  <action name="actionExportSelected">
+   <property name="text">
+    <string>Export Selected Message As [...]</string>
+   </property>
+  </action>
+  <action name="actionViewSelected">
+   <property name="text">
+    <string>View Selected Message</string>
+   </property>
+   <property name="toolTip">
+    <string>Limited embedded viewer. For better experience export it and open with your mail client.</string>
+   </property>
+  </action>
+  <action name="actionMoveToFolder">
+   <property name="text">
+    <string>Move To Folder [...]</string>
+   </property>
+  </action>
+  <action name="actionRemoveFromArchive">
+   <property name="text">
+    <string>Remove File from Archive</string>
+   </property>
+   <property name="toolTip">
+    <string>Permanently deletes the message.</string>
    </property>
   </action>
  </widget>

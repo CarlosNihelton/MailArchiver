@@ -39,7 +39,10 @@ public:
     MailArchiverWidget();
     virtual ~MailArchiverWidget();
     static const int ExitCodeRestartApp=-54321;
-    
+
+// protected:
+//     void contextMenuEvent(QContextMenuEvent *event);
+
 protected slots:
     //Actions
     //void onClose(); //Not required. Directly connected to the widget close handler.
@@ -50,18 +53,25 @@ protected slots:
     void onNewArchive();
     void onNewFolder();
     void onNewTag();
-    void onOpenArchive();    
+    void onOpenArchive();
     void onArchiveEmails();
     void onArchiveEntireFolder();
-    
+
     //TODO: Implement a context menu for the mail list view.
-    
+    void onCustomCtxMenuRequested(QPoint pos);
+
+    //Context menu actions:
+    void onActionViewSelected();
+    void onActionExportSelected();
+    void onActionMoveToFolder();
+    void onActionRemoveFromArchive();
+
     //Widget reactors
-    void onListViewDoubleClicked(const QModelIndex& index);
-    
+//     void onListViewDoubleClicked(const QModelIndex& index);
+
     //slot for restarting the application.
     void onRestartApplication();
-    
+
 private:
     Ui::MailArchiverWidget* ui;
     MailListModel* model;
