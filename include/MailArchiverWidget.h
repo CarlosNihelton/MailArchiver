@@ -54,6 +54,8 @@ protected slots:
     void onArchiveEmails();
     void onArchiveEntireFolder();
     
+    //TODO: Implement a context menu for the mail list view.
+    
     //Widget reactors
     void onListViewDoubleClicked(const QModelIndex& index);
     
