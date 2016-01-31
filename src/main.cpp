@@ -24,7 +24,6 @@
 
 int main(int argc, char** argv)
 {
-
     SingleApp app(argc, argv);
     MailArchiverWidget mailarchiver;
     mailarchiver.show();

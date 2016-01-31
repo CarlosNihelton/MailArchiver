@@ -31,6 +31,14 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+option(ENABLE_PROFILING "Enables/disables profiling data generation" OFF)
+
+if(ENABLE_PROFILING)
+    if (CMAKE_CXX_COMPILER MATCHES "Clang" or CMAKE_CXX_COMPILER MATCHES "GCC")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+    endif()
+endif ()
+    
 
 include_directories(${Qt5Widgets_INCLUDES} ${Qt5Sql_INCLUDES} ${CMAKE_BINARY_DIR})
 include_directories(${Boost_INCLUDE_DIR})
@@ -39,6 +47,7 @@ add_definitions(${Qt5Widgets_DEFINITIONS})
 set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 
 qt5_add_resources(MailQRC "${PROJECT_SOURCE_DIR}/res/MailArchiverWidget.qrc")
+
 file(GLOB MailArchiver_SRCS "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/3rd/*/*.cpp" "${PROJECT_SOURCE_DIR}/3rd/*/*.cc" "${CMAKE_BINARY_DIR}/build/*.cpp")
     
 add_executable(MailArchiver ${MailArchiver_SRCS} ${MailQRC})

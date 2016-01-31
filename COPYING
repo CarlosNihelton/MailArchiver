@@ -1,4 +1,4 @@
-***************************************************************************
+
 Mail Archiver - A solution to store and manage offline e-mail files.      *
 Copyright (C) 2015-2016 Carlos Nihelton <carlosnsoliveira@gmail.com>      *
                                                                           *
@@ -17,7 +17,6 @@ Copyright (C) 2015-2016 Carlos Nihelton <carlosnsoliveira@gmail.com>      *
   write to the Free Software Foundation, Inc., 59 Temple Place,           *
   Suite 330, Boston, MA  02111-1307, USA                                  *
                                                                           *
-***************************************************************************
 
 NOTE! The LGPL below is copyrighted by the Free Software Foundation, but
 the instance of code that it refers to (the Mail Archiver sources) are copyrighted 
