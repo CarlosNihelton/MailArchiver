@@ -20,6 +20,7 @@
 ****************************************************************************/
 //Qt
 #include <QDebug>
+#include <QSqlQuery>
 #include <QSqlRecord>
 #include <QFileDialog>
 #include <QDesktopServices>
@@ -40,12 +41,11 @@
 #include "MailArchiverWidget.h"
 #include "ui_MailArchiverWidget.h"
 
-MailArchiverWidget::MailArchiverWidget() : ui(new Ui::MailArchiverWidget), delegate(new MailListDelegate()), model(nullptr)
+MailArchiverWidget::MailArchiverWidget() : ctxMenu(new QMenu(this)),ui(new Ui::MailArchiverWidget), model(nullptr), delegate(new MailListDelegate())
 {
     ui->setupUi(this);
     ui->more->setChecked(false);
     ui->mailListView->setItemDelegate(delegate);
-    //ui->mailListView->setModel(model);
     ui->mailListView->show();
 
     //Connecting actions.
@@ -53,14 +53,20 @@ MailArchiverWidget::MailArchiverWidget() : ui(new Ui::MailArchiverWidget), deleg
     connect(ui->actionNewArchive, &QAction::triggered, this, &MailArchiverWidget::onNewArchive);
     connect(ui->actionArchiveEmails, &QAction::triggered, this, &MailArchiverWidget::onArchiveEmails);
     connect(ui->actionArchiveEntireFolder, &QAction::triggered, this, &MailArchiverWidget::onArchiveEntireFolder);
-    //Context menu for list mailListView
+    
+    //Context menu for mailListView
+    ctxMenu->addAction(ui->actionViewSelected);
+    ctxMenu->addAction(ui->actionExportSelected);
+    ctxMenu->addSeparator();
+    ctxMenu->addAction(ui->actionMoveToFolder);
+    ctxMenu->addAction(ui->actionRemoveFromArchive);
+    
     connect(ui->mailListView, &QListView::customContextMenuRequested, this, &MailArchiverWidget::onCustomCtxMenuRequested);
     connect(ui->actionViewSelected, &QAction::triggered, this, &MailArchiverWidget::onActionViewSelected);
     connect(ui->actionExportSelected, &QAction::triggered, this, &MailArchiverWidget::onActionExportSelected);
     connect(ui->actionMoveToFolder, &QAction::triggered, this, &MailArchiverWidget::onActionMoveToFolder);
     connect(ui->actionRemoveFromArchive, &QAction::triggered, this, &MailArchiverWidget::onActionRemoveFromArchive);
     //Connecting other widget reactors.
-//     connect(ui->mailListView, &QListView::doubleClicked, this, &MailArchiverWidget::onListViewDoubleClicked);
      connect(ui->mailListView, &QListView::doubleClicked, this, &MailArchiverWidget::onActionViewSelected);
 
     emit(ui->more->toggled(false));
@@ -71,6 +77,13 @@ MailArchiverWidget::~MailArchiverWidget()
     delete ui;
 }
 
+void MailArchiverWidget::updateListView()
+{
+//     archive->refresh();
+    model = archive->emails();
+//     ui->mailListView->setModel(model);
+    model->setQuery(model->query());
+}
 
 // Defining the slots.
 
@@ -83,8 +96,7 @@ void MailArchiverWidget::onOpenArchive()
             QApplication::setOverrideCursor(Qt::WaitCursor);
             archive=new MailArchive(fn);
             if(model) delete model;
-            model = archive->emails();
-            ui->mailListView->setModel(model);
+            updateListView();
             QApplication::restoreOverrideCursor();
         });
         f.get();
@@ -100,8 +112,7 @@ void MailArchiverWidget::onNewArchive()
             QApplication::setOverrideCursor(Qt::WaitCursor);
             archive=new MailArchive(fn);
             if(model) delete model;
-            model = archive->emails();
-            ui->mailListView->setModel(model);
+            updateListView();
             QApplication::restoreOverrideCursor();
         });
         f.get();
@@ -118,7 +129,7 @@ void MailArchiverWidget::onArchiveEmails()
     {
         archive->archiveFolder(tmp.path());
     }
-    archive->refresh();
+    updateListView();
 }
 
 void MailArchiverWidget::onArchiveEntireFolder()
@@ -127,6 +138,7 @@ void MailArchiverWidget::onArchiveEntireFolder()
     auto f = std::async([this, &folder]() {
         QApplication::setOverrideCursor(Qt::WaitCursor);
         archive->archiveFolder(folder);
+        updateListView();
         QApplication::restoreOverrideCursor();
     });
     f.get();
@@ -137,13 +149,6 @@ void MailArchiverWidget::onCustomCtxMenuRequested(QPoint pos)
 {
     auto index = ui->mailListView->indexAt(pos);
     if(index.isValid()) {
-        auto ctxMenu = new QMenu(this);
-        ctxMenu->addAction(ui->actionViewSelected);
-        ctxMenu->addAction(ui->actionExportSelected);
-        ctxMenu->addSeparator();
-        ctxMenu->addAction(ui->actionMoveToFolder);
-        ctxMenu->addAction(ui->actionRemoveFromArchive);
-
         ctxMenu->popup(ui->mailListView->viewport()->mapToGlobal(pos));
     }
 
@@ -153,22 +158,34 @@ void MailArchiverWidget::onCustomCtxMenuRequested(QPoint pos)
 void MailArchiverWidget::onActionViewSelected() {
 
 }
-void MailArchiverWidget::onActionExportSelected() {
 
+void MailArchiverWidget::onActionExportSelected() {
+    auto selected = ui->mailListView->selectionModel();
+    auto model = selected->model();
+    
+    if(selected->currentIndex().isValid()){
+        int currentRow = selected->currentIndex().row();
+        QString id = model->data(model->index(currentRow, 0), MailListModel::messageIdRole).toString();
+        auto fileName = QFileDialog::getSaveFileName(this, "Save Message File", QStandardPaths::displayName(QStandardPaths::HomeLocation), "Outlook Message Files (*.msg)");
+        if(!fileName.isEmpty()){
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            archive->saveMsgAsFile(id,fileName);
+            QApplication::restoreOverrideCursor();
+        }
+    }
 }
+
 void MailArchiverWidget::onActionMoveToFolder() {
 
 }
+
 void MailArchiverWidget::onActionRemoveFromArchive() {
-
+    auto selected = ui->mailListView->selectionModel();
+    auto model = selected->model();
+    
+    if(selected->currentIndex().isValid()){
+        int currentRow = selected->currentIndex().row();
+        QString id = model->data(model->index(currentRow, 0), MailListModel::messageIdRole).toString();
+        archive->deleteMsg(id);
+    }
 }
-
-// void MailArchiverWidget::onListViewDoubleClicked(const QModelIndex& index)
-// {
-//     const QAbstractItemModel* model(index.model());
-//     QApplication::setOverrideCursor(Qt::WaitCursor);
-//     QString id = model->data(model->index(index.row(),0), MailListModel::messageIdRole).toString();
-//     archive->saveMsgAsFile(id,id+".msg");
-//     QApplication::restoreOverrideCursor();
-// }
-

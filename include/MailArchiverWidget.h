@@ -40,8 +40,8 @@ public:
     virtual ~MailArchiverWidget();
     static const int ExitCodeRestartApp=-54321;
 
-// protected:
-//     void contextMenuEvent(QContextMenuEvent *event);
+protected:
+    void updateListView();
 
 protected slots:
     //Actions
@@ -73,6 +73,7 @@ protected slots:
     void onRestartApplication();
 
 private:
+    QMenu* ctxMenu;
     Ui::MailArchiverWidget* ui;
     MailListModel* model;
     MailListDelegate* delegate;
