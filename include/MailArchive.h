@@ -52,6 +52,9 @@ private:
     unsigned int transactionCounter;
     
 public:
+    void refresh();
+    
+public:
     MailArchive(const QString& filename);
     void openFile(const QString& filename);
     virtual ~MailArchive();
@@ -72,7 +75,7 @@ public:
     void archiveFolder(const QString& folder);
     Core::Msg retrieveMsg(const QString& messageId);
     void saveMsgAsFile(const QString& messageId, const QString& fileName);
-    void refresh();
+    void deleteMsg(const QString& id);
     
 };
 

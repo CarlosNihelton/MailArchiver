@@ -86,6 +86,13 @@ MailArchive::~MailArchive() {
     db.close();
 }
 
+void MailArchive::refresh()
+{
+    m_Emails->setQuery(m_Emails->query());
+    //m_Folders->setQuery(m_Folders->query());
+}
+
+
 void MailArchive::setActiveFolder(const QString& af)
 {
     m_ActiveFolder = af;
@@ -107,6 +114,7 @@ void MailArchive::archiveFolder(const QString& folder)
         archiveMsg(msg);
         db.commit();
     }
+    refresh();
 }
 
 void MailArchive::archiveMsg(Core::Msg& msgFile)
@@ -181,8 +189,12 @@ void MailArchive::saveMsgAsFile(const QString& messageId, const QString& fileNam
 
 }
 
-void MailArchive::refresh()
+void MailArchive::deleteMsg(const QString& id)
 {
-    m_Emails->setQuery(m_Emails->query());
-    m_Folders->setQuery(m_Folders->query());
+    QSqlQuery q(db);
+    q.prepare("DELETE FROM MailArchive WHERE MESSAGEID=?");
+    q.addBindValue(id);
+    q.exec();
+    //TODO: Delete from folders too.
+    refresh();
 }
