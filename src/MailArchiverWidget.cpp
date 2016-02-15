@@ -81,7 +81,7 @@ void MailArchiverWidget::updateListView()
 {
 //     archive->refresh();
     model = archive->emails();
-//     ui->mailListView->setModel(model);
+    ui->mailListView->setModel(model);
     model->setQuery(model->query());
 }
 
