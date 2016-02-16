@@ -23,15 +23,17 @@
 #define MAILARCHIVERWIDGET_H
 
 #include <QMainWindow>
-#include "MailArchive.h"
 
 namespace Ui
 {
 class MailArchiverWidget;
 }
 
+class ArchiveManager;
 class MailArchive;
 class MailListDelegate;
+class MailListModel;
+class QModelIndex;
 
 class MailArchiverWidget : public QMainWindow
 {
@@ -41,11 +43,12 @@ public:
     static const int ExitCodeRestartApp=-54321;
 
 protected:
-    void updateListView();
+    void createConnections();
+    void createCtxMenu();
+    void updateViews();
 
 protected slots:
     //Actions
-    //void onClose(); //Not required. Directly connected to the widget close handler.
     void onEditTags();
     void onEditFolders();
     void onEditPreferences();
@@ -57,7 +60,8 @@ protected slots:
     void onArchiveEmails();
     void onArchiveEntireFolder();
 
-    //TODO: Implement a context menu for the mail list view.
+    void onSelectedOpenedArchive(const QModelIndex& index);
+    void onSelectedFolderOnCurrentArchive(const QModelIndex& index);
     void onCustomCtxMenuRequested(QPoint pos);
 
     //Context menu actions:
@@ -66,18 +70,14 @@ protected slots:
     void onActionMoveToFolder();
     void onActionRemoveFromArchive();
 
-    //Widget reactors
-//     void onListViewDoubleClicked(const QModelIndex& index);
-
     //slot for restarting the application.
     void onRestartApplication();
 
 private:
     QMenu* ctxMenu;
     Ui::MailArchiverWidget* ui;
-    MailListModel* model;
     MailListDelegate* delegate;
-    MailArchive* archive;
+    ArchiveManager* archiveMgr;
 };
 
 #endif // MAILARCHIVERWIDGET_H

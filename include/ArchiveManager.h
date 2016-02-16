@@ -22,56 +22,83 @@
 #ifndef ARCHIVEMANAGER_H
 #define ARCHIVEMANAGER_H
 
-#include <QMap>
+#include <string>
+#include <unordered_map>
 #include <QObject>
-#include <QStandardItemModel>
+#include <QStringListModel>
+#include "MailArchive.h"
 
 class MailArchive;
 
-class ArchiveManager : public QObject
+class ArchiveManager
 {
-    Q_OBJECT
-
 public:
      /**
-     * Meyers-Singleton design.
+     * Meyers Singleton design.
      * 
      * This method is the only way the user can create and/or access theArchiveManager.
      * \return A static reference to the ArchiveManager object created.
      */
-    static ArchiveManager& instance(){
-        static ArchiveManager theArchiveManager;
-        return theArchiveManager;
-    }
+    static ArchiveManager& instance();
     
     /**
-     * Returns the tree model exposing the structure of the open archives.
+     * Adds an archive to the pool. If it doesn't exist, it will be created.
+     * \param fileName The full path and name for the archive file to be opened or created.
+     * \param name The name to be stored as a key to access the archive inside the pool.
+     */
+    void openArchive(const QString& fileName, const QString& name);
+    
+    /**
+     * Closes an open archive.
+     * By closing I mean only removing its name from the list and model members. The archive will be alive into the pool, because it can be reopened.
+     * \param name The name of the archive to be closed as it is stored in the internal pool.
+     */
+    void closeArchive(const QString& name);
+    
+    /**
+     * Really closes an open archive.
+     * \param name The name of the archive to be closed as it is stored in the internal pool.
+     */
+    void forceCloseArchive(const QString& name);
+    
+    /**
+     * Returns the active archive.
+     */
+    MailArchive* current();
+    
+    /**
+     * Sets the active archive.
+     * \param name of the archive as stored into the pool.
+     */
+    void setCurrent(const QString& name);
+    
+    /**
+     * Returns the list model exposing the structure of the open archives.
      * 
      */
-    QStandardItemModel* mgrModel() const;
+    QStringListModel& model() {return m_model;};
     
     /**
      * Access the internal pool of archives held by theArchiveManager.
      * 
      */
-    QMap<QString,MailArchive>& archivePool() const;
+    std::unordered_map<std::string,MailArchive*>& archivePool() {return m_archivePool;};
 
     /**
      * Virtual destructor.
      */
     virtual ~ArchiveManager();
-    
-public Q_SLOTS:
-
 
 private:
     /**
      * Default constructor is private.
      */
-    ArchiveManager();
+    ArchiveManager()=default;
     
-    QStandardItemModel m_mgrModel;
-    QMap<QString,MailArchive> m_archivePool;
+    QStringListModel m_model;
+    QStringList m_list;
+    QString m_current;
+    std::unordered_map<std::string,MailArchive*> m_archivePool;
 };
 
 #endif // ARCHIVEMANAGER_H

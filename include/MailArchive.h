@@ -55,6 +55,7 @@ public:
     void refresh();
     
 public:
+    MailArchive()=default;
     MailArchive(const QString& filename);
     void openFile(const QString& filename);
     virtual ~MailArchive();
@@ -64,9 +65,9 @@ public:
     const QString& path(){return m_Path;}
     const QString& fileName(){return baseFileName;}
     
-    MailListModel* emails(){return m_Emails;}
-    QSqlQueryModel* folders(){return m_Folders;}
-    QSqlQueryModel* tags(){return m_Tags;}
+    MailListModel* emails() const {return m_Emails;}
+    QSqlQueryModel* folders() const {return m_Folders;}
+    QSqlQueryModel* tags() const {return m_Tags;}
     
     void setActiveFolder(const QString& af);
     void setActiveTag(const QString& at);

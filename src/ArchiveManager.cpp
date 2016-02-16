@@ -19,8 +19,63 @@
  *                                                                           *
  ****************************************************************************/
 
-#include "include/ArchiveManager.h"
+#include <string>
+#include "ArchiveManager.h"
+#include "MailArchive.h"
 
-// TODO: Implement this class.
+ArchiveManager& ArchiveManager::instance(){
+        static ArchiveManager theArchiveManager;
+        return theArchiveManager;
+    }
 
-#include "include/ArchiveManager.moc"
+void ArchiveManager::openArchive(const QString& fileName, const QString& name)
+{
+    if(!m_list.contains(name)){
+        std::string  sName(name.toStdString());
+        if(!m_archivePool.count(sName)){
+            m_archivePool.emplace(sName, new MailArchive(fileName));
+        }
+        m_list << name;
+        m_model.setStringList(m_list);
+        m_current = name;
+    }
+}
+
+void ArchiveManager::closeArchive(const QString& name)
+{
+    std::string  sName(name.toStdString());
+    if(m_archivePool.count(sName)){
+        m_list.removeAll(name);
+        m_model.setStringList(m_list);
+    }
+}
+
+void ArchiveManager::forceCloseArchive(const QString& name){
+    std::string  sName(name.toStdString());
+    if(m_archivePool.count(sName)){
+        m_archivePool.erase(sName);
+        closeArchive(name);
+    }
+}
+
+MailArchive* ArchiveManager::current(){
+    MailArchive* ret{nullptr};
+    std::string key(m_current.toStdString());
+    if(m_archivePool.count(key)){
+        ret=m_archivePool[key];
+    }
+    return ret;
+}
+
+void ArchiveManager::setCurrent(const QString& name){
+    if(m_archivePool.count(name.toStdString())){
+        m_current=name;
+    }
+}
+
+ArchiveManager::~ArchiveManager()
+{
+    for(auto it : m_archivePool){
+        delete it.second;
+    }
+}

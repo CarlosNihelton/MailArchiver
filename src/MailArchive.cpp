@@ -37,7 +37,6 @@
 #include "utils.h"
 #include "MailListModel.h"
 #include "MailArchive.h"
-//#include "KCompressionDevice"
 
 MailArchive::MailArchive(const QString& filename) : transactionCounter{0}
 {
