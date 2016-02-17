@@ -19,21 +19,19 @@
  *                                                                           *
  ****************************************************************************/
 
-#include <string>
 #include "ArchiveManager.h"
-#include "MailArchive.h"
 
-ArchiveManager& ArchiveManager::instance(){
-        static ArchiveManager theArchiveManager;
-        return theArchiveManager;
-    }
+ArchiveManager& ArchiveManager::instance() {
+    static ArchiveManager theArchiveManager;
+    return theArchiveManager;
+}
 
 void ArchiveManager::openArchive(const QString& fileName, const QString& name)
 {
-    if(!m_list.contains(name)){
+    if(!m_list.contains(name)) {
         std::string  sName(name.toStdString());
-        if(!m_archivePool.count(sName)){
-            m_archivePool.emplace(sName, new MailArchive(fileName));
+        if(!m_archivePool.count(sName)) {
+            m_archivePool.emplace(sName, std::make_unique<MailArchive>(fileName));
         }
         m_list << name;
         m_model.setStringList(m_list);
@@ -41,41 +39,53 @@ void ArchiveManager::openArchive(const QString& fileName, const QString& name)
     }
 }
 
-void ArchiveManager::closeArchive(const QString& name)
+void ArchiveManager::softCloseArchive(const QString& name)
 {
     std::string  sName(name.toStdString());
-    if(m_archivePool.count(sName)){
+    if(m_archivePool.count(sName)) {
         m_list.removeAll(name);
         m_model.setStringList(m_list);
     }
 }
 
-void ArchiveManager::forceCloseArchive(const QString& name){
+void ArchiveManager::hardCloseArchive(const QString& name) {
     std::string  sName(name.toStdString());
-    if(m_archivePool.count(sName)){
+    if(m_archivePool.count(sName)) {
         m_archivePool.erase(sName);
-        closeArchive(name);
+        softCloseArchive(name);
     }
 }
 
-MailArchive* ArchiveManager::current(){
-    MailArchive* ret{nullptr};
+void ArchiveManager::hardCloseAll() {
+    m_archivePool.clear();
+    m_list.clear();
+    m_model.setStringList(m_list);
+}
+
+MailArchive* ArchiveManager::current() {
+    MailArchive* ret {nullptr};
     std::string key(m_current.toStdString());
-    if(m_archivePool.count(key)){
-        ret=m_archivePool[key];
+    if(m_archivePool.count(key)) {
+        ret=m_archivePool[key].get();
     }
     return ret;
 }
 
-void ArchiveManager::setCurrent(const QString& name){
-    if(m_archivePool.count(name.toStdString())){
+void ArchiveManager::setCurrent(const QString& name) {
+    if(m_archivePool.count(name.toStdString())) {
         m_current=name;
     }
 }
 
-ArchiveManager::~ArchiveManager()
+QStringListModel* ArchiveManager::model()
 {
-    for(auto it : m_archivePool){
-        delete it.second;
-    }
+    QStringListModel* ret {&m_model};
+    return ret;
 }
+
+// ArchiveManager::~ArchiveManager()
+// {
+//     for(auto it : m_archivePool){
+//         delete it.second;
+//     }
+// }

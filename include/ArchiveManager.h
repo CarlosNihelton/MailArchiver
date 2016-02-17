@@ -22,13 +22,17 @@
 #ifndef ARCHIVEMANAGER_H
 #define ARCHIVEMANAGER_H
 
+//std
 #include <string>
+#include <memory>
 #include <unordered_map>
+
+//Qt
 #include <QObject>
 #include <QStringListModel>
-#include "MailArchive.h"
 
-class MailArchive;
+//locals
+#include "MailArchive.h"
 
 class ArchiveManager
 {
@@ -50,19 +54,26 @@ public:
     
     /**
      * Closes an open archive.
-     * By closing I mean only removing its name from the list and model members. The archive will be alive into the pool, because it can be reopened.
+     * By closing I mean only removing its name from the list and model members. The archive will be alive into the pool, because it can be easily reopened.
      * \param name The name of the archive to be closed as it is stored in the internal pool.
      */
-    void closeArchive(const QString& name);
+    void softCloseArchive(const QString& name);
     
     /**
      * Really closes an open archive.
      * \param name The name of the archive to be closed as it is stored in the internal pool.
      */
-    void forceCloseArchive(const QString& name);
+    void hardCloseArchive(const QString& name);
     
     /**
-     * Returns the active archive.
+     * Really closes everything.
+     * Needed because we cannot late destroy QSqlDatabase objects contained inside MailArchive objects, because it
+     * might happen of the driver being already unloaded and resulting on SIGSEGV when ARchiveManager dtor is called.
+     */
+    void hardCloseAll();
+    
+    /**
+     * Returns an irresponsible pointer the active archive.
      */
     MailArchive* current();
     
@@ -73,21 +84,21 @@ public:
     void setCurrent(const QString& name);
     
     /**
-     * Returns the list model exposing the structure of the open archives.
+     * Returns an irresponsible pointer to list model exposing the structure of the open archives.
      * 
      */
-    QStringListModel& model() {return m_model;};
+    QStringListModel* model();
     
     /**
      * Access the internal pool of archives held by theArchiveManager.
      * 
      */
-    std::unordered_map<std::string,MailArchive*>& archivePool() {return m_archivePool;};
+    std::unordered_map<std::string,std::unique_ptr<MailArchive>>& archivePool() {return m_archivePool;};
 
     /**
      * Virtual destructor.
      */
-    virtual ~ArchiveManager();
+    ~ArchiveManager()=default;
 
 private:
     /**
@@ -98,7 +109,7 @@ private:
     QStringListModel m_model;
     QStringList m_list;
     QString m_current;
-    std::unordered_map<std::string,MailArchive*> m_archivePool;
+    std::unordered_map<std::string,std::unique_ptr<MailArchive>> m_archivePool;
 };
 
 #endif // ARCHIVEMANAGER_H

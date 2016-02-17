@@ -46,6 +46,8 @@ protected:
     void createConnections();
     void createCtxMenu();
     void updateViews();
+    //Due to a bug in Qt5, we cannot destroy an QSqlDatabase too later, because the driver might be already unloaded, which will result in a SIGSEGV. For this reason I reimplemented the closeEvent to destroy the Archiver Manager and all members.
+    void closeEvent(QCloseEvent *event);
 
 protected slots:
     //Actions

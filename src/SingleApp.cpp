@@ -21,7 +21,7 @@
 
 #include "SingleApp.h"
 
-SingleApp::SingleApp(int& argc, char** argv) :  m_sharedMem{"org.olivec4.MailArchiverApp"},
+SingleApp::SingleApp(int& argc, char** argv) :  m_sharedMem{"org.olivec.MailArchiverApp"},
                                                 theApp(argc,argv)
 {
     if(!m_sharedMem.create(1)) {

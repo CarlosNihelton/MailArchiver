@@ -20,6 +20,7 @@
 ****************************************************************************/
 //Qt
 #include <QDebug>
+#include <QCloseEvent>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QFileDialog>
@@ -88,11 +89,14 @@ MailArchiverWidget::~MailArchiverWidget()
 
 void MailArchiverWidget::updateViews()
 {
-    auto& model = archiveMgr->model();
     ui->mailListView->setModel(archiveMgr->current()->emails());
-    ui->archivesListView->setModel(&model);
+    ui->archivesListView->setModel(archiveMgr->model());
 }
 
+void MailArchiverWidget::closeEvent(QCloseEvent *event)
+{
+    archiveMgr->hardCloseAll();
+}
 
 // Defining the slots.
 

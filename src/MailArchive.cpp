@@ -81,8 +81,6 @@ MailArchive::~MailArchive() {
     delete m_Emails;
     delete m_Folders;
     delete m_Tags;
-
-    db.close();
 }
 
 void MailArchive::refresh()
