@@ -44,7 +44,7 @@ include_directories(${Qt5Widgets_INCLUDES} ${Qt5Sql_INCLUDES} ${CMAKE_BINARY_DIR
 include_directories(${Boost_INCLUDE_DIR})
 include_directories("${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/3rd/pole" "${PROJECT_SOURCE_DIR}/3rd/md5-cc")
 add_definitions(${Qt5Widgets_DEFINITIONS})
-set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "-Wall ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 
 qt5_add_resources(MailQRC "${PROJECT_SOURCE_DIR}/res/MailArchiverWidget.qrc")
 

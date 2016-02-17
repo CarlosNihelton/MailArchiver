@@ -24,11 +24,9 @@
 
 //std
 #include <string>
-#include <memory>
 #include <unordered_map>
 
 //Qt
-#include <QObject>
 #include <QStringListModel>
 
 //locals
@@ -54,7 +52,7 @@ public:
     
     /**
      * Closes an open archive.
-     * By closing I mean only removing its name from the list and model members. The archive will be alive into the pool, because it can be easily reopened.
+     * By closing I mean only removing its name from the list and model members. The archive will be alive into the pool, in order to respond quickly to a reopen request.
      * \param name The name of the archive to be closed as it is stored in the internal pool.
      */
     void softCloseArchive(const QString& name);
@@ -73,9 +71,9 @@ public:
     void hardCloseAll();
     
     /**
-     * Returns an irresponsible pointer the active archive.
+     * Returns a reference to the active archive.
      */
-    MailArchive* current();
+    MailArchive& current();
     
     /**
      * Sets the active archive.
@@ -93,7 +91,7 @@ public:
      * Access the internal pool of archives held by theArchiveManager.
      * 
      */
-    std::unordered_map<std::string,std::unique_ptr<MailArchive>>& archivePool() {return m_archivePool;};
+    std::unordered_map<std::string,MailArchive>& archivePool() {return m_archivePool;};
 
     /**
      * Virtual destructor.
@@ -109,7 +107,7 @@ private:
     QStringListModel m_model;
     QStringList m_list;
     QString m_current;
-    std::unordered_map<std::string,std::unique_ptr<MailArchive>> m_archivePool;
+    std::unordered_map<std::string,MailArchive> m_archivePool;
 };
 
 #endif // ARCHIVEMANAGER_H

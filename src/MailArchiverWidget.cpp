@@ -89,7 +89,7 @@ MailArchiverWidget::~MailArchiverWidget()
 
 void MailArchiverWidget::updateViews()
 {
-    ui->mailListView->setModel(archiveMgr->current()->emails());
+    ui->mailListView->setModel(archiveMgr->current().emails());
     ui->archivesListView->setModel(archiveMgr->model());
 }
 
@@ -125,7 +125,7 @@ void MailArchiverWidget::onNewArchive()
         auto f = std::async([this, &fn, &baseName]() {
             QApplication::setOverrideCursor(Qt::WaitCursor);
             archiveMgr->openArchive(fn, baseName);
-            //updateListView();
+            updateViews();
             QApplication::restoreOverrideCursor();
         });
         f.get();
@@ -140,7 +140,7 @@ void MailArchiverWidget::onArchiveEmails()
 
     if(res == QMessageBox::Ok)
     {
-        archiveMgr->current()->archiveFolder(tmp.path());
+        archiveMgr->current().archiveFolder(tmp.path());
     }
     updateViews();
 }
@@ -150,7 +150,7 @@ void MailArchiverWidget::onArchiveEntireFolder()
     QString folder = QFileDialog::getExistingDirectory();
     auto f = std::async([this, &folder]() {
         QApplication::setOverrideCursor(Qt::WaitCursor);
-        archiveMgr->current()->archiveFolder(folder);
+        archiveMgr->current().archiveFolder(folder);
         updateViews();
         QApplication::restoreOverrideCursor();
     });
@@ -195,7 +195,7 @@ void MailArchiverWidget::onActionExportSelected() {
         auto fileName = QFileDialog::getSaveFileName(this, "Save Message File", QStandardPaths::displayName(QStandardPaths::HomeLocation), "Outlook Message Files (*.msg)");
         if(!fileName.isEmpty()) {
             QApplication::setOverrideCursor(Qt::WaitCursor);
-            archiveMgr->current()->saveMsgAsFile(id,fileName);
+            archiveMgr->current().saveMsgAsFile(id,fileName);
             QApplication::restoreOverrideCursor();
         }
     }
@@ -212,6 +212,6 @@ void MailArchiverWidget::onActionRemoveFromArchive() {
     if(selected->currentIndex().isValid()) {
         int currentRow = selected->currentIndex().row();
         QString id = model->data(model->index(currentRow, 0), MailListModel::messageIdRole).toString();
-        archiveMgr->current()->deleteMsg(id);
+        archiveMgr->current().deleteMsg(id);
     }
 }

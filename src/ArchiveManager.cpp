@@ -31,7 +31,7 @@ void ArchiveManager::openArchive(const QString& fileName, const QString& name)
     if(!m_list.contains(name)) {
         std::string  sName(name.toStdString());
         if(!m_archivePool.count(sName)) {
-            m_archivePool.emplace(sName, std::make_unique<MailArchive>(fileName));
+            m_archivePool.emplace(sName, MailArchive(fileName));
         }
         m_list << name;
         m_model.setStringList(m_list);
@@ -62,13 +62,8 @@ void ArchiveManager::hardCloseAll() {
     m_model.setStringList(m_list);
 }
 
-MailArchive* ArchiveManager::current() {
-    MailArchive* ret {nullptr};
-    std::string key(m_current.toStdString());
-    if(m_archivePool.count(key)) {
-        ret=m_archivePool[key].get();
-    }
-    return ret;
+MailArchive& ArchiveManager::current() {
+    return m_archivePool.at(m_current.toStdString());
 }
 
 void ArchiveManager::setCurrent(const QString& name) {
@@ -82,10 +77,3 @@ QStringListModel* ArchiveManager::model()
     QStringListModel* ret {&m_model};
     return ret;
 }
-
-// ArchiveManager::~ArchiveManager()
-// {
-//     for(auto it : m_archivePool){
-//         delete it.second;
-//     }
-// }

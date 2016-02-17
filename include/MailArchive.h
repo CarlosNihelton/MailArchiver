@@ -24,50 +24,51 @@
 #define MAILARCHIVE_H
 
 //std
+#include <memory>
 
 //Qt
 #include <QString>
 #include <QSqlDatabase>
+#include <QSqlQueryModel>
 
 //Local
 #include "msg.h"
-
-class QSqlQueryModel;
-class QSqlDatabase;
-class MailListModel;
+#include "MailListModel.h"
 
 class MailArchive
 {
 private:
+    unsigned int transactionCounter;
+    
     QString baseFileName;
     QString m_Path;
     QString m_ActiveFolder;
     QString m_ActiveTag;
     
-    MailListModel* m_Emails;
-    QSqlQueryModel* m_Folders;
-    QSqlQueryModel* m_Tags;
+    std::unique_ptr<MailListModel> m_Emails;
+    std::unique_ptr<QSqlQueryModel> m_Folders;
+    std::unique_ptr<QSqlQueryModel> m_Tags;
     
     QSqlDatabase db;
-    unsigned int transactionCounter;
+    
     
 public:
-    void refresh();
+    void refreshQueries();
     
 public:
     MailArchive()=default;
     MailArchive(const QString& filename);
     void openFile(const QString& filename);
-    virtual ~MailArchive();
+    ~MailArchive()=default;
     
     const QString& activeFolder(){return m_ActiveFolder;}
     const QString& activeTag(){return m_ActiveTag;}
     const QString& path(){return m_Path;}
     const QString& fileName(){return baseFileName;}
     
-    MailListModel* emails() const {return m_Emails;}
-    QSqlQueryModel* folders() const {return m_Folders;}
-    QSqlQueryModel* tags() const {return m_Tags;}
+    MailListModel* emails() {return m_Emails.get();}
+    QSqlQueryModel* folders() {return m_Folders.get();}
+    QSqlQueryModel* tags() {return m_Tags.get();}
     
     void setActiveFolder(const QString& af);
     void setActiveTag(const QString& at);
@@ -78,6 +79,11 @@ public:
     void saveMsgAsFile(const QString& messageId, const QString& fileName);
     void deleteMsg(const QString& id);
     
+    //Move semantics
+    MailArchive(MailArchive&& rhs)=default;
+    MailArchive& operator=(MailArchive&& rhs)=default;
+    MailArchive(const MailArchive& rhs)=delete;
+    MailArchive& operator=(const MailArchive& rhs)=delete;
 };
 
 #endif // MAILARCHIVE_H
