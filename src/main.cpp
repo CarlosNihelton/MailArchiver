@@ -22,10 +22,30 @@
 #include "SingleApp.h"
 #include "MailArchiverWidget.h"
 
+#include <QDebug>
+
+#include <csignal>
+
+//SIGSEGV handler
+
+void sigsegvHandler(int signum){
+    if(signum == SIGSEGV){
+        qDebug() << "Segmentation fault occurred!";
+        qApp->exit(signum);
+    }
+    exit(signum);
+}
+
 int main(int argc, char** argv)
 {
-    SingleApp app(argc, argv);
-    MailArchiverWidget mailarchiver;
-    mailarchiver.show();
-    return app.exec();
+    //std::signal(SIGSEGV, sigsegvHandler);
+    try {
+        SingleApp app(argc, argv);
+        MailArchiverWidget mailarchiver;
+        mailarchiver.show();
+        return app.exec();
+    } catch(...)
+    {
+        qDebug() << "An unexpected error occured!";
+    }
 }

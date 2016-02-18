@@ -21,8 +21,7 @@
 
 #include "SingleApp.h"
 
-SingleApp::SingleApp(int& argc, char** argv) :  m_sharedMem{"org.olivec3.MailArchiverApp"},
-                                                theApp(argc,argv)
+SingleApp::SingleApp(int& argc, char** argv) :  m_sharedMem{"org.olivec.MailArchiverApp"}, theApp(argc,argv)
 {
     if(!m_sharedMem.create(1)) {
         QMessageBox::critical(nullptr, QObject::tr("Mail Archive: Cannot Start!"),

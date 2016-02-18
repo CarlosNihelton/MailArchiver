@@ -37,16 +37,15 @@
 #include "utils.h"
 #include "MailListModel.h"
 #include "MailArchive.h"
-//#include "KCompressionDevice"
 
 MailArchive::MailArchive(const QString& filename) : transactionCounter{0}
 {
     openFile(filename);
-    m_Folders = new QSqlQueryModel;
+    m_Folders = std::make_unique<QSqlQueryModel>();
     m_Folders->setQuery("SELECT * FROM MailFolders", db);
-    m_Tags = new QSqlQueryModel;
+    m_Tags = std::make_unique<QSqlQueryModel>();
     m_Tags->setQuery("SELECT * FROM MailTags", db);
-    m_Emails = new MailListModel;
+    m_Emails = std::make_unique<MailListModel>();
     m_Emails->setQuery("SELECT * FROM MailArchive", db);
 }
 
@@ -78,18 +77,10 @@ void MailArchive::openFile(const QString& filename)
 
 }
 
-MailArchive::~MailArchive() {
-    delete m_Emails;
-    delete m_Folders;
-    delete m_Tags;
-
-    db.close();
-}
-
-void MailArchive::refresh()
+void MailArchive::refreshQueries()
 {
     m_Emails->setQuery(m_Emails->query());
-    //m_Folders->setQuery(m_Folders->query());
+    m_Folders->setQuery(m_Folders->query());
 }
 
 
@@ -114,7 +105,7 @@ void MailArchive::archiveFolder(const QString& folder)
         archiveMsg(msg);
         db.commit();
     }
-    refresh();
+    refreshQueries();
 }
 
 void MailArchive::archiveMsg(Core::Msg& msgFile)
@@ -196,5 +187,5 @@ void MailArchive::deleteMsg(const QString& id)
     q.addBindValue(id);
     q.exec();
     //TODO: Delete from folders too.
-    refresh();
+    refreshQueries();
 }
