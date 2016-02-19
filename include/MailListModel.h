@@ -23,8 +23,6 @@
 #define MAILLISTMODEL_H
 
 #include <QSqlQueryModel>
-#include <unordered_map>
-#include <string>
 
 class MailListModel : public QSqlQueryModel
 {

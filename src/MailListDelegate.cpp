@@ -22,7 +22,6 @@
 //Qt
 #include <QPainter>
 #include <QWidget>
-#include <QDebug>
 #include <QApplication>
 
 //local
@@ -84,7 +83,9 @@ void MailListDelegate::paint ( QPainter* painter, const QStyleOptionViewItem& op
     whenRect.setRight(iconRect.right()-8);
     whenRect.setLeft ( subjectRect.right()-fm.width ( whenText )-16);
 
-    painter->drawPixmap ( QPoint ( iconRect.left()+iconsize.width() /2+2,iconRect.top()+iconsize.height() /2+3 ),attachIcon.pixmap ( iconsize.width(),iconsize.height() ) );
+    painter->drawPixmap ( QPoint ( iconRect.left()+iconsize.width() /2+2,
+                                   iconRect.top()+iconsize.height() /2+3 ),
+                          attachIcon.pixmap ( iconsize.width(),iconsize.height() ) );
 
     painter->setFont ( font );
     painter->drawText ( subjectRect, Qt::AlignLeft, subjectText );

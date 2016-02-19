@@ -20,12 +20,8 @@
 ****************************************************************************/
 
 #include "MailListModel.h"
-#include "MailListDelegate.h"
-#include <QDebug>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include <QSqlError>
-#include <QUrl>
 
 QVariant MailListModel::data(const QModelIndex& index, int role) const
 {
@@ -42,7 +38,7 @@ QVariant MailListModel::data(const QModelIndex& index, int role) const
                     sublimited.replace(119,122,"...");
                     returnVar = QVariant::fromValue<QString>(sublimited);
                 } else
-                returnVar = record(index.row()).value("SUBJECT").toString();                
+                returnVar = record(index.row()).value("SUBJECT");                
                 break;
                 
             case senderTextRole:
@@ -66,9 +62,7 @@ QVariant MailListModel::data(const QModelIndex& index, int role) const
         }
     }
     
-         
     return returnVar;
-
 }
 
 #include "MailListModel.moc"

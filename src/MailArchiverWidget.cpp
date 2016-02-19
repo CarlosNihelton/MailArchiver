@@ -18,8 +18,10 @@
 *   Suite 330, Boston, MA  02111-1307, USA                                  *
 *                                                                           *
 ****************************************************************************/
+//std
+#include <future>
+
 //Qt
-#include <QDebug>
 #include <QCloseEvent>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -31,9 +33,6 @@
 #include <QSqlQueryModel>
 #include <QDirIterator>
 
-//std
-#include <future>
-
 //Local
 #include "msg.h"
 #include "MailListModel.h"
@@ -43,8 +42,9 @@
 #include "MailArchiverWidget.h"
 #include "ui_MailArchiverWidget.h"
 
-MailArchiverWidget::MailArchiverWidget() : ctxMenu(new QMenu(this)),ui(new Ui::MailArchiverWidget), delegate(new MailListDelegate()), archiveMgr(&ArchiveManager::instance())
-{
+MailArchiverWidget::MailArchiverWidget() : ctxMenu(new QMenu(this)),
+            ui(new Ui::MailArchiverWidget), delegate(new MailListDelegate()),
+            archiveMgr(&ArchiveManager::instance()) {
     ui->setupUi(this);
     ui->more->setChecked(false);
     ui->mailListView->setItemDelegate(delegate);
@@ -95,14 +95,14 @@ void MailArchiverWidget::updateViews()
 
 void MailArchiverWidget::closeEvent(QCloseEvent *event)
 {
+    Q_UNUSED(event);
     archiveMgr->hardCloseAll();
 }
 
-// Defining the slots.
-
 void MailArchiverWidget::onOpenArchive()
 {
-    QString fn = QFileDialog::getOpenFileName(this, tr("Open Mail archives"), QStandardPaths::displayName(QStandardPaths::HomeLocation),
+    QString fn = QFileDialog::getOpenFileName(this, tr("Open Mail archives"), 
+                                              QStandardPaths::displayName(QStandardPaths::HomeLocation),
                  tr("Mail Archives (*.mar *.mad *.sqlite)"));
     QString baseName = QFileInfo(fn).baseName();
     if(!fn.isEmpty()) {
@@ -119,7 +119,9 @@ void MailArchiverWidget::onOpenArchive()
 
 void MailArchiverWidget::onNewArchive()
 {
-    QString fn = QFileDialog::getSaveFileName(this, tr("Save new mail archive"), QStandardPaths::displayName(QStandardPaths::HomeLocation), tr("Mail archives (*.mar *.mad *.sqlite)"));
+    QString fn = QFileDialog::getSaveFileName(this, tr("Save new mail archive"), 
+                                              QStandardPaths::displayName(QStandardPaths::HomeLocation), 
+                                              tr("Mail archives (*.mar *.mad *.sqlite)"));
     QString baseName = QFileInfo(fn).baseName();
     if(!fn.isEmpty()) {
         auto f = std::async([this, &fn, &baseName]() {
@@ -136,7 +138,8 @@ void MailArchiverWidget::onArchiveEmails()
 {
     QDir tmp(QDir::currentPath() + "/mailArchiverTmp");
     QDesktopServices::openUrl(QUrl::fromLocalFile(tmp.path()));
-    int res = QMessageBox::information(this, tr("How to archive emails"), tr("Drag and drop your emails into the opened folder and, when finished, hit this OK button."));
+    int res = QMessageBox::information(this, tr("How to archive emails"), 
+                                       tr("Drag and drop your emails into the opened folder and, when finished, hit this OK button."));
 
     if(res == QMessageBox::Ok)
     {
@@ -192,7 +195,9 @@ void MailArchiverWidget::onActionExportSelected() {
     if(selected->currentIndex().isValid()) {
         int currentRow = selected->currentIndex().row();
         QString id = model->data(model->index(currentRow, 0), MailListModel::messageIdRole).toString();
-        auto fileName = QFileDialog::getSaveFileName(this, "Save Message File", QStandardPaths::displayName(QStandardPaths::HomeLocation), "Outlook Message Files (*.msg)");
+        auto fileName = QFileDialog::getSaveFileName(this, "Save Message File", 
+                                                     QStandardPaths::displayName(QStandardPaths::HomeLocation), 
+                                                     "Outlook Message Files (*.msg)");
         if(!fileName.isEmpty()) {
             QApplication::setOverrideCursor(Qt::WaitCursor);
             archiveMgr->current().saveMsgAsFile(id,fileName);
