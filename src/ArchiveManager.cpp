@@ -21,16 +21,17 @@
 
 #include "ArchiveManager.h"
 
-ArchiveManager& ArchiveManager::instance() {
+ArchiveManager& ArchiveManager::instance()
+{
     static ArchiveManager theArchiveManager;
     return theArchiveManager;
 }
 
 void ArchiveManager::openArchive(const QString& fileName, const QString& name)
 {
-    if(!m_list.contains(name)) {
-        std::string  sName(name.toStdString());
-        if(!m_archivePool.count(sName)) {
+    if (!m_list.contains(name)) {
+        std::string sName(name.toStdString());
+        if (!m_archivePool.count(sName)) {
             m_archivePool.emplace(sName, MailArchive(fileName));
         }
         m_list << name;
@@ -41,39 +42,43 @@ void ArchiveManager::openArchive(const QString& fileName, const QString& name)
 
 void ArchiveManager::softCloseArchive(const QString& name)
 {
-    std::string  sName(name.toStdString());
-    if(m_archivePool.count(sName)) {
+    std::string sName(name.toStdString());
+    if (m_archivePool.count(sName)) {
         m_list.removeAll(name);
         m_model.setStringList(m_list);
     }
 }
 
-void ArchiveManager::hardCloseArchive(const QString& name) {
-    std::string  sName(name.toStdString());
-    if(m_archivePool.count(sName)) {
+void ArchiveManager::hardCloseArchive(const QString& name)
+{
+    std::string sName(name.toStdString());
+    if (m_archivePool.count(sName)) {
         m_archivePool.erase(sName);
         softCloseArchive(name);
     }
 }
 
-void ArchiveManager::hardCloseAll() {
+void ArchiveManager::hardCloseAll()
+{
     m_archivePool.clear();
     m_list.clear();
     m_model.setStringList(m_list);
 }
 
-MailArchive& ArchiveManager::current() {
+MailArchive& ArchiveManager::current()
+{
     return m_archivePool.at(m_current.toStdString());
 }
 
-void ArchiveManager::setCurrent(const QString& name) {
-    if(m_archivePool.count(name.toStdString())) {
-        m_current=name;
+void ArchiveManager::setCurrent(const QString& name)
+{
+    if (m_archivePool.count(name.toStdString())) {
+        m_current = name;
     }
 }
 
 QStringListModel* ArchiveManager::model()
 {
-    QStringListModel* ret {&m_model};
+    QStringListModel* ret{ &m_model };
     return ret;
 }

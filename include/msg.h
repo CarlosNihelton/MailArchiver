@@ -22,46 +22,46 @@
 #ifndef MAILARCHIVER_MSG_H
 #define MAILARCHIVER_MSG_H
 
-//std
+// std
 #include <string>
 
-//local
+// local
 #include "pole.h"
 
-namespace Core {
-  
+namespace Core
+{
+
 class Msg
 {
 private:
-  POLE::Storage* m_File;
-  bool m_Opened;
-  std::string m_FileName;
-  std::string m_SenderName, m_SenderAddress;
-  std::string m_ReceiversNames, m_ReceiversAddresses;
-  std::string m_Subject;
-  std::string m_CC;
-  std::string m_Bcc;
-  std::string m_date;
-  std::string m_body;
-  std::string m_hash;
-  bool m_hasAttachments;
-    
+    POLE::Storage* m_File;
+    bool m_Opened;
+    std::string m_FileName;
+    std::string m_SenderName, m_SenderAddress;
+    std::string m_ReceiversNames, m_ReceiversAddresses;
+    std::string m_Subject;
+    std::string m_CC;
+    std::string m_Bcc;
+    std::string m_date;
+    std::string m_body;
+    std::string m_hash;
+    bool m_hasAttachments;
 
 protected:
     const std::string getDateTimeFromStream(const char* stream);
     const std::string getStringFromStream(const char* stream);
-    void visit( int indent, POLE::Storage* storage, std::string path );
-  
+    void visit(int indent, POLE::Storage* storage, std::string path);
+
 public:
     Msg();
-    Msg(const std::string& filename);
-    
+    explicit Msg(const std::string& filename);
+
     ~Msg();
-    
+
     bool open(const char* arg1);
-    
+
     void loadBody();
-    
+
     const std::string fileName();
     const std::string senderName();
     const std::string receiversNames();
@@ -73,20 +73,19 @@ public:
     const std::string date();
     const std::string& body();
     const std::string hash();
-    
+
     bool hasAttachments();
-    
+
     void close();
-    
-    //No copy operators
-    Msg(const Msg&)=delete;
-    Msg operator=(const Msg&)=delete;
-    
-    //Move-only
+
+    // No copy operators
+    Msg(const Msg&) = delete;
+    Msg operator=(const Msg&) = delete;
+
+    // Move-only
     Msg(Msg&& rhs);
     Msg& operator=(Msg&& rhs);
 };
-
 }
 
 #endif // MAILARCHIVER_MSG_H

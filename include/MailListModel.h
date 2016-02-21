@@ -28,15 +28,15 @@ class MailListModel : public QSqlQueryModel
 {
 public:
     enum datarole {
-    subjectTextRole = Qt::UserRole+100,
-    senderTextRole  = Qt::UserRole+101,
-    whenTextRole    = Qt::UserRole+102,
-    hasAttachRole   = Qt::UserRole+103,
-    messageIdRole   = Qt::UserRole+104
+        subjectTextRole = Qt::UserRole + 100,
+        senderTextRole  = Qt::UserRole + 101,
+        whenTextRole    = Qt::UserRole + 102,
+        hasAttachRole   = Qt::UserRole + 103,
+        messageIdRole   = Qt::UserRole + 104
     };
-    MailListModel()=default;
-    QVariant data(const QModelIndex& index, int role=Qt::DisplayRole) const Q_DECL_OVERRIDE;
-    ~MailListModel()=default;
+    MailListModel() = default;
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+    ~MailListModel() = default;
 };
 
 #endif // MAILLISTMODEL_H

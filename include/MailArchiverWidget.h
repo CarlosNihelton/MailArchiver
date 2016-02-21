@@ -40,17 +40,19 @@ class MailArchiverWidget : public QMainWindow
 public:
     MailArchiverWidget();
     virtual ~MailArchiverWidget();
-    static const int ExitCodeRestartApp=-54321;
+    static const int ExitCodeRestartApp = -54321;
 
 protected:
     void createConnections();
     void createCtxMenu();
     void updateViews();
-    //Due to a bug in Qt5, we cannot destroy an QSqlDatabase too later, because the driver might be already unloaded, which will result in a SIGSEGV. For this reason I reimplemented the closeEvent to destroy the Archiver Manager and all members.
-    void closeEvent(QCloseEvent *event);
+    // Due to a bug in Qt5, we cannot destroy an QSqlDatabase too later, because the driver might be already unloaded,
+    // which will result in a SIGSEGV. For this reason I reimplemented the closeEvent to destroy the Archiver Manager
+    // and all members.
+    void closeEvent(QCloseEvent* event);
 
 protected slots:
-    //Actions
+    // Actions
     void onEditTags();
     void onEditFolders();
     void onEditPreferences();
@@ -66,13 +68,13 @@ protected slots:
     void onSelectedFolderOnCurrentArchive(const QModelIndex& index);
     void onCustomCtxMenuRequested(QPoint pos);
 
-    //Context menu actions:
+    // Context menu actions:
     void onActionViewSelected();
     void onActionExportSelected();
     void onActionMoveToFolder();
     void onActionRemoveFromArchive();
 
-    //slot for restarting the application.
+    // slot for restarting the application.
     void onRestartApplication();
 
 private:

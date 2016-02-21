@@ -26,10 +26,10 @@
 
 namespace Utils
 {
-    std::string base64_encode(const std::string &val);
-    std::string base64_decode(const std::string &val);
-    std::string string_compress_encode_file(const std::string& filename);
-    void string_decompress_decode_to_file(const std::string& data, const std::string& filename);
+std::string base64_encode(const std::string& val);
+std::string base64_decode(const std::string& val);
+std::string string_compress_encode_file(const std::string& filename);
+void string_decompress_decode_to_file(const std::string& data, const std::string& filename);
 };
 
 #endif // UTILS_H

@@ -31,8 +31,7 @@ int main(int argc, char** argv)
         MailArchiverWidget mailarchiver;
         mailarchiver.show();
         return app.exec();
-    } catch(...)
-    {
+    } catch (...) {
         qDebug() << "An unexpected error occured!";
     }
 }

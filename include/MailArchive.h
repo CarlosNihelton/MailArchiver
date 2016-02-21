@@ -19,19 +19,18 @@
  *                                                                           *
  ****************************************************************************/
 
-
 #ifndef MAILARCHIVE_H
 #define MAILARCHIVE_H
 
-//std
+// std
 #include <memory>
 
-//Qt
+// Qt
 #include <QString>
 #include <QSqlDatabase>
 #include <QSqlQueryModel>
 
-//Local
+// Local
 #include "msg.h"
 #include "MailListModel.h"
 
@@ -39,51 +38,50 @@ class MailArchive
 {
 private:
     unsigned int transactionCounter;
-    
+
     QString baseFileName;
     QString m_Path;
     QString m_ActiveFolder;
     QString m_ActiveTag;
-    
+
     std::unique_ptr<MailListModel> m_Emails;
     std::unique_ptr<QSqlQueryModel> m_Folders;
     std::unique_ptr<QSqlQueryModel> m_Tags;
-    
+
     QSqlDatabase db;
-    
-    
+
 public:
     void refreshQueries();
-    
+
 public:
-    MailArchive()=default;
-    MailArchive(const QString& filename);
+    MailArchive() = default;
+    explicit MailArchive(const QString& filename);
     void openFile(const QString& filename);
-    ~MailArchive()=default;
-    
-    const QString& activeFolder(){return m_ActiveFolder;}
-    const QString& activeTag(){return m_ActiveTag;}
-    const QString& path(){return m_Path;}
-    const QString& fileName(){return baseFileName;}
-    
-    MailListModel* emails() {return m_Emails.get();}
-    QSqlQueryModel* folders() {return m_Folders.get();}
-    QSqlQueryModel* tags() {return m_Tags.get();}
-    
+    ~MailArchive() = default;
+
+    const QString& activeFolder() { return m_ActiveFolder; }
+    const QString& activeTag() { return m_ActiveTag; }
+    const QString& path() { return m_Path; }
+    const QString& fileName() { return baseFileName; }
+
+    MailListModel* emails() { return m_Emails.get(); }
+    QSqlQueryModel* folders() { return m_Folders.get(); }
+    QSqlQueryModel* tags() { return m_Tags.get(); }
+
     void setActiveFolder(const QString& af);
     void setActiveTag(const QString& at);
-    
+
     void archiveMsg(Core::Msg& msgFile);
     void archiveFolder(const QString& folder);
     Core::Msg retrieveMsg(const QString& messageId);
     void saveMsgAsFile(const QString& messageId, const QString& fileName);
     void deleteMsg(const QString& id);
-    
-    //Move semantics
-    MailArchive(MailArchive&& rhs)=default;
-    MailArchive& operator=(MailArchive&& rhs)=default;
-    MailArchive(const MailArchive& rhs)=delete;
-    MailArchive& operator=(const MailArchive& rhs)=delete;
+
+    // Move semantics
+    MailArchive(MailArchive&& rhs) = default;
+    MailArchive& operator=(MailArchive&& rhs) = default;
+    MailArchive(const MailArchive& rhs) = delete;
+    MailArchive& operator=(const MailArchive& rhs) = delete;
 };
 
 #endif // MAILARCHIVE_H
