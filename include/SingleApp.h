@@ -36,8 +36,10 @@ public:
     int exec() { return theApp.exec(); }
     static void sigsegvHandler(int signum)
     {
-        if (signum == SIGSEGV)
+        if (signum == SIGSEGV) {
             m_sharedMem.detach();
+        }
+        exit(signum);
     }
     ~SingleApp() = default;
 
