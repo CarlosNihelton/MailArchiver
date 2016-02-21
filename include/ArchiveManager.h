@@ -22,92 +22,93 @@
 #ifndef ARCHIVEMANAGER_H
 #define ARCHIVEMANAGER_H
 
-//std
+// std
 #include <string>
 #include <unordered_map>
 
-//Qt
+// Qt
 #include <QStringListModel>
 
-//locals
+// locals
 #include "MailArchive.h"
 
 class ArchiveManager
 {
 public:
-     /**
-     * Meyers Singleton design.
-     * 
-     * This method is the only way the user can create and/or access theArchiveManager.
-     * \return A static reference to the ArchiveManager object created.
-     */
+    /**
+    * Meyers Singleton design.
+    *
+    * This method is the only way the user can create and/or access theArchiveManager.
+    * \return A static reference to the ArchiveManager object created.
+    */
     static ArchiveManager& instance();
-    
+
     /**
      * Adds an archive to the pool. If it doesn't exist, it will be created.
      * \param fileName The full path and name for the archive file to be opened or created.
      * \param name The name to be stored as a key to access the archive inside the pool.
      */
     void openArchive(const QString& fileName, const QString& name);
-    
+
     /**
      * Closes an open archive.
-     * By closing I mean only removing its name from the list and model members. The archive will be alive into the pool, in order to respond quickly to a reopen request.
+     * By closing I mean only removing its name from the list and model members. The archive will be alive into the
+     * pool, in order to respond quickly to a reopen request.
      * \param name The name of the archive to be closed as it is stored in the internal pool.
      */
     void softCloseArchive(const QString& name);
-    
+
     /**
      * Really closes an open archive.
      * \param name The name of the archive to be closed as it is stored in the internal pool.
      */
     void hardCloseArchive(const QString& name);
-    
+
     /**
      * Really closes everything.
      * Needed because we cannot late destroy QSqlDatabase objects contained inside MailArchive objects, because it
      * might happen of the driver being already unloaded and resulting on SIGSEGV when ARchiveManager dtor is called.
      */
     void hardCloseAll();
-    
+
     /**
      * Returns a reference to the active archive.
      */
     MailArchive& current();
-    
+
     /**
      * Sets the active archive.
      * \param name of the archive as stored into the pool.
      */
     void setCurrent(const QString& name);
-    
+
     /**
      * Returns an irresponsible pointer to list model exposing the structure of the open archives.
-     * 
+     *
      */
     QStringListModel* model();
-    
+
     /**
      * Access the internal pool of archives held by theArchiveManager.
-     * 
+     *
      */
-    std::unordered_map<std::string,MailArchive>& archivePool() {return m_archivePool;};
+    std::unordered_map<std::string, MailArchive>& archivePool() { return m_archivePool; };
 
     /**
      * Virtual destructor.
      */
-    ~ArchiveManager()=default;
+    ~ArchiveManager() = default;
 
 private:
     /**
      * Default constructor is private.
      */
-    ArchiveManager()=default;
-    
+    ArchiveManager() = default;
+
     QStringListModel m_model;
     QStringList m_list;
     QString m_current;
-    std::unordered_map<std::string,MailArchive> m_archivePool;
+    std::unordered_map<std::string, MailArchive> m_archivePool;
 };
 
 #endif // ARCHIVEMANAGER_H

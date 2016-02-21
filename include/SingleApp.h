@@ -19,7 +19,6 @@
 *                                                                           *
 ****************************************************************************/
 
-
 #ifndef SINGLEAPP_H
 #define SINGLEAPP_H
 
@@ -27,23 +26,29 @@
 #include <QSharedMemory>
 #include <QMessageBox>
 
-class SingleApp {
+#include <csignal>
+
+class SingleApp
+{
 
 public:
     SingleApp(int& argc, char** argv);
-    int exec() {
-        return theApp.exec();
+    int exec() { return theApp.exec(); }
+    static void sigsegvHandler(int signum)
+    {
+        if (signum == SIGSEGV)
+            m_sharedMem.detach();
     }
-    ~SingleApp()=default;
+    ~SingleApp() = default;
 
-    //Disable copy and move.
-    SingleApp(const SingleApp&)=delete;
-    SingleApp& operator=(const SingleApp&)=delete;
-    SingleApp(SingleApp&&)=delete;
-    SingleApp& operator=(SingleApp&&)=delete;
+    // Disable copy and move.
+    SingleApp(const SingleApp&) = delete;
+    SingleApp& operator=(const SingleApp&) = delete;
+    SingleApp(SingleApp&&) = delete;
+    SingleApp& operator=(SingleApp&&) = delete;
 
 private:
-    QSharedMemory m_sharedMem;
+    static QSharedMemory m_sharedMem;
     QApplication theApp;
 };
 

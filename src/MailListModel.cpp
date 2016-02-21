@@ -20,55 +20,48 @@
 ****************************************************************************/
 
 #include "MailListModel.h"
-#include "MailListDelegate.h"
-#include <QDebug>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include <QSqlError>
-#include <QUrl>
 
 QVariant MailListModel::data(const QModelIndex& index, int role) const
 {
     QVariant returnVar;
     QString sublimited;
-    
-    if (index.isValid()){
-        switch(role)
-        {
-            case subjectTextRole:
-                sublimited = record(index.row()).value("SUBJECT").toString();
-                if(sublimited.length() > 123){
-                    sublimited.resize(123);
-                    sublimited.replace(119,122,"...");
-                    returnVar = QVariant::fromValue<QString>(sublimited);
-                } else
-                returnVar = record(index.row()).value("SUBJECT").toString();                
-                break;
-                
-            case senderTextRole:
-                returnVar = record(index.row()).value("CFROM");
-                break;
-            case whenTextRole:
-                returnVar = record(index.row()).value("CWHEN");
-                break;
-            case hasAttachRole:
-                returnVar = record(index.row()).value("HASATTACH");
-                break;
-            case messageIdRole:
-                returnVar = record(index.row()).value("MESSAGEID");
-                break;
-            case Qt::DisplayRole:
-                returnVar = QVariant();
-                break;
-            default:
-                returnVar = QSqlQueryModel::data(index, role);
-                break;
+
+    if (index.isValid()) {
+        switch (role) {
+        case subjectTextRole:
+            sublimited = record(index.row()).value("SUBJECT").toString();
+            if (sublimited.length() > 123) {
+                sublimited.resize(123);
+                sublimited.replace(119, 122, "...");
+                returnVar = QVariant::fromValue<QString>(sublimited);
+            } else
+                returnVar = record(index.row()).value("SUBJECT");
+            break;
+
+        case senderTextRole:
+            returnVar = record(index.row()).value("CFROM");
+            break;
+        case whenTextRole:
+            returnVar = record(index.row()).value("CWHEN");
+            break;
+        case hasAttachRole:
+            returnVar = record(index.row()).value("HASATTACH");
+            break;
+        case messageIdRole:
+            returnVar = record(index.row()).value("MESSAGEID");
+            break;
+        case Qt::DisplayRole:
+            returnVar = QVariant();
+            break;
+        default:
+            returnVar = QSqlQueryModel::data(index, role);
+            break;
         }
     }
-    
-         
-    return returnVar;
 
+    return returnVar;
 }
 
 #include "MailListModel.moc"

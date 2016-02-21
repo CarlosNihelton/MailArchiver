@@ -19,7 +19,7 @@
 *                                                                           *
 ****************************************************************************/
 
-//std
+// std
 #include <iostream>
 #include <chrono>
 #include <ctime>
@@ -31,24 +31,29 @@
 #include <algorithm>
 #include <codecvt>
 
-//local
+// local
 #include "msg.h"
 #include "md5.hh"
 
-namespace Core {
-
-//Cosntructors:
-Msg::Msg() : m_File(nullptr), m_Opened(false)
+namespace Core
 {
 
+// Cosntructors:
+Msg::Msg()
+    : m_File(nullptr)
+    , m_Opened(false)
+{
 }
 
-Msg::Msg(const std::string& filename) : m_File(nullptr), m_Opened(false), m_FileName(filename)
+Msg::Msg(const std::string& filename)
+    : m_File(nullptr)
+    , m_Opened(false)
+    , m_FileName(filename)
 {
     open(filename.c_str());
 }
 
-//Getters
+// Getters
 const std::string Msg::fileName()
 {
     return m_FileName;
@@ -96,8 +101,7 @@ const std::string Msg::date()
 
 void Msg::loadBody()
 {
-    if(m_body.empty() && m_Opened)
-    {
+    if (m_body.empty() && m_Opened) {
         m_body = getStringFromStream("__substg1.0_1000001F");
     }
 }
@@ -110,8 +114,7 @@ const std::string& Msg::body()
 
 const std::string Msg::hash()
 {
-    if(m_hash.empty())
-    {
+    if (m_hash.empty()) {
         MD5 md5(m_File->internalFile());
         m_hash.assign(md5.hex_digest());
     }
@@ -123,90 +126,97 @@ bool Msg::hasAttachments()
     return m_hasAttachments;
 }
 
-
-//Protected
-void Msg::visit( int indent, POLE::Storage* storage, std::string path )
+// Protected
+void Msg::visit(int indent, POLE::Storage* storage, std::string path)
 {
     std::list<std::string> entries;
-    entries = storage->entries( path );
+    entries = storage->entries(path);
 
     std::list<std::string>::iterator it;
-    for( it = entries.begin(); it != entries.end(); ++it )
-    {
-        std::string name = *it;
+    for (it = entries.begin(); it != entries.end(); ++it) {
+        std::string name     = *it;
         std::string fullname = path + name;
-        for( int j = 0; j < indent; j++ ) std::cout << "    ";
-        POLE::Stream* ss = new POLE::Stream( storage, fullname );
+        for (int j = 0; j < indent; j++) std::cout << "    ";
+        POLE::Stream* ss = new POLE::Stream(storage, fullname);
         std::cout << name;
-        if( ss ) if( !ss->fail() )std::cout << "  (" << ss->size() << ")";
+        if (ss)
+            if (!ss->fail())
+                std::cout << "  (" << ss->size() << ")";
         std::cout << std::endl;
         delete ss;
 
-        if( storage->isDirectory( fullname ) )
-            visit( indent+1, storage, fullname + "/" );
+        if (storage->isDirectory(fullname))
+            visit(indent + 1, storage, fullname + "/");
     }
-
 }
 
-//Open
+// Open
 bool Msg::open(const char* arg1)
 {
-    if(m_Opened)
-    {
+    if (m_Opened) {
         close();
     }
 
-    m_File = new POLE::Storage(arg1);
+    m_File   = new POLE::Storage(arg1);
     m_Opened = m_File->open();
-    if(m_Opened)
-    {
-        //Look for Sender Name
+    if (m_Opened) {
+        // Look for Sender Name
         m_SenderName = getStringFromStream("__substg1.0_0C1A001F");
-        if(m_SenderName.empty())
+        if (m_SenderName.empty())
             m_SenderName = getStringFromStream("__substg1.0_3FFA001F");
-        if(m_SenderName.empty())
+        if (m_SenderName.empty())
             m_SenderName = getStringFromStream("__substg1.0_0042001F");
 
-        //Sender Address
+        // Sender Address
         m_SenderAddress = getStringFromStream("__substg1.0_0065001F");
-        if(m_SenderAddress.empty()) m_SenderAddress = getStringFromStream("__substg1.0_0C1F001F");
-        if(m_SenderAddress.empty()) m_SenderAddress = getStringFromStream("__substg1.0_800B001F");
-        if(m_SenderAddress.empty()) m_SenderAddress = getStringFromStream("__substg1.0_3FFA001F");
-        if(m_SenderAddress.empty()) m_SenderAddress = getStringFromStream("__substg1.0_5D01001F");
-        if(m_SenderAddress.empty()) m_SenderAddress = getStringFromStream("__substg1.0_5D02001F");
+        if (m_SenderAddress.empty())
+            m_SenderAddress = getStringFromStream("__substg1.0_0C1F001F");
+        if (m_SenderAddress.empty())
+            m_SenderAddress = getStringFromStream("__substg1.0_800B001F");
+        if (m_SenderAddress.empty())
+            m_SenderAddress = getStringFromStream("__substg1.0_3FFA001F");
+        if (m_SenderAddress.empty())
+            m_SenderAddress = getStringFromStream("__substg1.0_5D01001F");
+        if (m_SenderAddress.empty())
+            m_SenderAddress = getStringFromStream("__substg1.0_5D02001F");
 
-
-        //Subject
+        // Subject
         m_Subject = getStringFromStream("__substg1.0_0070001F");
-        if(m_Subject.empty()) m_Subject = getStringFromStream("__substg1.0_0E1D001F");
-        if(m_Subject.empty()) m_Subject = getStringFromStream("__substg1.0_0037001F");
+        if (m_Subject.empty())
+            m_Subject = getStringFromStream("__substg1.0_0E1D001F");
+        if (m_Subject.empty())
+            m_Subject = getStringFromStream("__substg1.0_0037001F");
 
-        std::transform(m_Subject.begin(), m_Subject.end(), m_Subject.begin(), [](char c)-> char {if(c=='\'')
-                       return '\"'; else return c;
-                                                                                                    });
+        std::transform(m_Subject.begin(), m_Subject.end(), m_Subject.begin(), [](char c) -> char {
+            if (c == '\'')
+                return '\"';
+            else
+                return c;
+        });
 
-        //BCC
+        // BCC
         m_Bcc = getStringFromStream("__substg1.0_0E02001F");
-        //CC
+        // CC
         m_CC = getStringFromStream("__substg1.0_0E03001F");
 
-        //Receivers Names
+        // Receivers Names
         m_ReceiversNames = getStringFromStream("__substg1.0_0E04001F");
 
-        //Receivers Addresses
+        // Receivers Addresses
         m_ReceiversAddresses = getStringFromStream("__substg1.0_5D01001F");
-        if(m_ReceiversAddresses.empty()) m_ReceiversAddresses = getStringFromStream("__substg1.0_5D09001F");
+        if (m_ReceiversAddresses.empty())
+            m_ReceiversAddresses = getStringFromStream("__substg1.0_5D09001F");
 
-        //Sent date
+        // Sent date
         m_date = getDateTimeFromStream("__properties_version1.0");
 
-        //If has attachments.
+        // If has attachments.
         m_hasAttachments = m_File->exists("__attach_version1.0_#00000000");
     }
     return m_Opened;
 }
 
-//Close
+// Close
 void Msg::close()
 {
     m_File->close();
@@ -219,8 +229,8 @@ void Msg::close()
     m_Bcc.clear();
     m_date.clear();
     m_body.clear();
-    m_hasAttachments=false;
-    m_Opened=false;
+    m_hasAttachments = false;
+    m_Opened         = false;
 
     delete m_File;
 }
@@ -229,41 +239,40 @@ const std::string Msg::getDateTimeFromStream(const char* stream)
 {
     std::stringstream ss;
     POLE::Stream requested_stream(m_File, stream);
-    if(requested_stream.fail()) std::cout<<"Failed to obtain stream: " << stream << '\n';
-    else
-    {
+    if (requested_stream.fail())
+        std::cout << "Failed to obtain stream: " << stream << '\n';
+    else {
         uint64_t microt;
-        uint32_t address=0;
+        uint32_t address = 0;
         int read;
         do {
             read = requested_stream.read(reinterpret_cast<unsigned char*>(&address), 4);
-        } while(read > 0 && address != 0x00390040u && address != 0x0E060040u && address != 0x80080040u);
+        } while (read > 0 && address != 0x00390040u && address != 0x0E060040u && address != 0x80080040u);
 
-        if(address == 0x00390040u || address == 0x0E060040u || address == 0x80080040u)
-        {
+        if (address == 0x00390040u || address == 0x0E060040u || address == 0x80080040u) {
             requested_stream.read(reinterpret_cast<unsigned char*>(&address), 4);
             requested_stream.read(reinterpret_cast<unsigned char*>(&microt), 8);
 
-            microt = microt/10;
+            microt = microt / 10;
 
             std::tm t;
-            t.tm_year = 1601-1900;
+            t.tm_year = 1601 - 1900;
             t.tm_mday = 1;
-            t.tm_mon = 0;
+            t.tm_mon  = 0;
             t.tm_hour = 0;
-            t.tm_min = 0;
-            t.tm_sec = 0;
+            t.tm_min  = 0;
+            t.tm_sec  = 0;
 
-            std::time_t pTypTime = std::mktime(&t); //PTypTime() == 01/01/1601 00:00:00.
+            std::time_t pTypTime = std::mktime(&t); // PTypTime() == 01/01/1601 00:00:00.
 
-            std::chrono::system_clock::time_point tpDate = (std::chrono::system_clock::from_time_t(pTypTime) +
-                    std::chrono::microseconds(microt));
+            std::chrono::system_clock::time_point tpDate
+                = (std::chrono::system_clock::from_time_t(pTypTime) + std::chrono::microseconds(microt));
             std::time_t ttDate = std::chrono::system_clock::to_time_t(tpDate);
 
             t = *(std::localtime(&ttDate));
 
-            ss << std::setw(4) << std::setfill('0') << t.tm_year +1900 << '-' << std::setw(2) << std::setfill('0') <<
-               t.tm_mon+1 << '-' << std::setw(2) << std::setfill('0') << t.tm_mday;
+            ss << std::setw(4) << std::setfill('0') << t.tm_year + 1900 << '-' << std::setw(2) << std::setfill('0')
+               << t.tm_mon + 1 << '-' << std::setw(2) << std::setfill('0') << t.tm_mday;
         }
     }
     return ss.str();
@@ -277,63 +286,68 @@ const std::string Msg::getStringFromStream(const char* stream)
     std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> converter;
 
     POLE::Stream requested_stream(m_File, stream);
-    if(!requested_stream.fail())
-    {
+    if (!requested_stream.fail()) {
         int read;
-        ret.reserve(requested_stream.size()/2);
-        helper.reserve(requested_stream.size()/2);
+        ret.reserve(requested_stream.size() / 2);
+        helper.reserve(requested_stream.size() / 2);
 
         do {
             read = requested_stream.read(buffer, sizeof(buffer));
-            helper.insert(helper.length(),reinterpret_cast<char16_t*>(buffer), read/2);
-        } while(read>=sizeof(buffer));
-        if(helper.length()>0)
-            if(helper.at(helper.length()-1) == (char16_t)0)
-                helper.resize(helper.length()-1);
+            helper.insert(helper.length(), reinterpret_cast<char16_t*>(buffer), read / 2);
+        } while (read >= sizeof(buffer));
+        if (helper.length() > 0)
+            if (helper.at(helper.length() - 1) == (char16_t)0)
+                helper.resize(helper.length() - 1);
         ret = converter.to_bytes(helper);
-
     }
     return ret;
 }
 
-//Destructor
+// Destructor
 Msg::~Msg()
 {
     close();
 }
 
-//Move semantics
-Msg::Msg(Msg&& rhs) :  m_Opened(std::move(rhs.m_Opened)), m_FileName(std::move(rhs.m_FileName)),
-    m_SenderName(std::move(rhs.m_SenderName)),m_SenderAddress(std::move(rhs.m_SenderAddress)),
-    m_ReceiversNames(std::move(rhs.m_ReceiversNames)), m_ReceiversAddresses(std::move(rhs.m_ReceiversAddresses)),
-    m_Subject(std::move(rhs.m_Subject)),m_CC(std::move(rhs.m_CC)),
-    m_Bcc(std::move(rhs.m_Bcc)), m_date(std::move(rhs.m_date)), m_body(std::move(rhs.m_body)),
-    m_hash(std::move(rhs.m_hash)), m_hasAttachments(std::move(rhs.m_hasAttachments))
+// Move semantics
+Msg::Msg(Msg&& rhs)
+    : m_Opened(std::move(rhs.m_Opened))
+    , m_FileName(std::move(rhs.m_FileName))
+    , m_SenderName(std::move(rhs.m_SenderName))
+    , m_SenderAddress(std::move(rhs.m_SenderAddress))
+    , m_ReceiversNames(std::move(rhs.m_ReceiversNames))
+    , m_ReceiversAddresses(std::move(rhs.m_ReceiversAddresses))
+    , m_Subject(std::move(rhs.m_Subject))
+    , m_CC(std::move(rhs.m_CC))
+    , m_Bcc(std::move(rhs.m_Bcc))
+    , m_date(std::move(rhs.m_date))
+    , m_body(std::move(rhs.m_body))
+    , m_hash(std::move(rhs.m_hash))
+    , m_hasAttachments(std::move(rhs.m_hasAttachments))
 {
-    m_File = rhs.m_File;
-    rhs.m_File=nullptr;
+    m_File     = rhs.m_File;
+    rhs.m_File = nullptr;
 }
 
 Msg& Msg::operator=(Msg&& rhs)
 {
-    if(this!=&rhs) {
-        m_Opened=std::move(rhs.m_Opened);
-        m_FileName=std::move(rhs.m_FileName);
-        m_SenderName=std::move(rhs.m_SenderName);
-        m_SenderAddress=std::move(rhs.m_SenderAddress);
-        m_ReceiversNames=std::move(rhs.m_ReceiversNames);
-        m_Subject=std::move(rhs.m_Subject);
-        m_ReceiversAddresses=std::move(rhs.m_ReceiversAddresses);
-        m_CC=std::move(rhs.m_CC);
-        m_Bcc=std::move(rhs.m_Bcc);
-        m_date=std::move(rhs.m_date);
-        m_body=std::move(rhs.m_body);
-        m_hash=std::move(rhs.m_hash);
-        m_hasAttachments=std::move(rhs.m_hasAttachments);
-        m_File = rhs.m_File;
-        rhs.m_File=nullptr;
+    if (this != &rhs) {
+        m_Opened             = std::move(rhs.m_Opened);
+        m_FileName           = std::move(rhs.m_FileName);
+        m_SenderName         = std::move(rhs.m_SenderName);
+        m_SenderAddress      = std::move(rhs.m_SenderAddress);
+        m_ReceiversNames     = std::move(rhs.m_ReceiversNames);
+        m_Subject            = std::move(rhs.m_Subject);
+        m_ReceiversAddresses = std::move(rhs.m_ReceiversAddresses);
+        m_CC                 = std::move(rhs.m_CC);
+        m_Bcc                = std::move(rhs.m_Bcc);
+        m_date               = std::move(rhs.m_date);
+        m_body               = std::move(rhs.m_body);
+        m_hash               = std::move(rhs.m_hash);
+        m_hasAttachments     = std::move(rhs.m_hasAttachments);
+        m_File               = rhs.m_File;
+        rhs.m_File           = nullptr;
     }
     return *this;
 }
-
 }

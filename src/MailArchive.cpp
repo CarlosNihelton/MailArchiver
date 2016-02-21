@@ -19,10 +19,10 @@
 *                                                                           *
 * ****************************************************************************/
 
-//std
+// std
 #include <fstream>
 #include <sstream>
-//Qt
+// Qt
 #include <QString>
 #include <QUrl>
 #include <QDirIterator>
@@ -33,12 +33,13 @@
 #include <QSqlQueryModel>
 #include <QDebug>
 #include <QSqlError>
-//local
+// local
 #include "utils.h"
 #include "MailListModel.h"
 #include "MailArchive.h"
 
-MailArchive::MailArchive(const QString& filename) : transactionCounter{0}
+MailArchive::MailArchive(const QString& filename)
+    : transactionCounter{ 0 }
 {
     openFile(filename);
     m_Folders = std::make_unique<QSqlQueryModel>();
@@ -52,13 +53,13 @@ MailArchive::MailArchive(const QString& filename) : transactionCounter{0}
 void MailArchive::openFile(const QString& filename)
 {
     QUrl name(filename);
-    baseFileName=name.fileName();
-    m_Path = name.path();
+    baseFileName = name.fileName();
+    m_Path       = name.path();
 
     db = QSqlDatabase::addDatabase("QSQLITE", baseFileName);
     db.setDatabaseName(filename);
 
-    if(db.open()) {
+    if (db.open()) {
         QSqlQuery q(db);
 
         q.exec("CREATE TABLE IF NOT EXISTS MailArchive ("
@@ -71,10 +72,11 @@ void MailArchive::openFile(const QString& filename)
 
         q.exec("CREATE TABLE IF NOT EXISTS MailFolders (FID INTEGER PRIMARY KEY NOT NULL, FNAME TEXT NOT NULL)");
         q.exec("CREATE TABLE IF NOT EXISTS MailTags (TID INTEGER PRIMARY KEY NO NULL, TNAME TEXT NOT NULL)");
-        q.exec("CREATE TABLE IF NOT EXISTS FolderRels (FRELID INTEGER PRIMARY KEY NOT NULL, FID INTEGER NOT NULL, MID VARCHAR(32) NOT NULL)");
-        q.exec("CREATE TABLE IF NOT EXISTS TagRels (TRELID INTEGER PRIMARY KEY NOT NULL, TID INTEGER NOT NULL, MID VARCHAR(32) NOT NULL)");
+        q.exec("CREATE TABLE IF NOT EXISTS FolderRels (FRELID INTEGER PRIMARY KEY NOT NULL, FID INTEGER NOT NULL, MID "
+               "VARCHAR(32) NOT NULL)");
+        q.exec("CREATE TABLE IF NOT EXISTS TagRels (TRELID INTEGER PRIMARY KEY NOT NULL, TID INTEGER NOT NULL, MID "
+               "VARCHAR(32) NOT NULL)");
     }
-
 }
 
 void MailArchive::refreshQueries()
@@ -82,7 +84,6 @@ void MailArchive::refreshQueries()
     m_Emails->setQuery(m_Emails->query());
     m_Folders->setQuery(m_Folders->query());
 }
-
 
 void MailArchive::setActiveFolder(const QString& af)
 {
@@ -96,9 +97,8 @@ void MailArchive::setActiveTag(const QString& at)
 
 void MailArchive::archiveFolder(const QString& folder)
 {
-    QDirIterator it(folder, QStringList()<<"*.msg", QDir::Files);
-    while(it.hasNext())
-    {
+    QDirIterator it(folder, QStringList() << "*.msg", QDir::Files);
+    while (it.hasNext()) {
         QString mes = it.next();
         qDebug() << mes;
         Core::Msg msg(mes.toStdString());
@@ -115,11 +115,12 @@ void MailArchive::archiveMsg(Core::Msg& msgFile)
     q.addBindValue(msgFile.hash().c_str());
     q.exec();
     q.next();
-    if(q.value(0).toInt()==0)
-    {
-        if(transactionCounter==0) db.transaction();
+    if (q.value(0).toInt() == 0) {
+        if (transactionCounter == 0)
+            db.transaction();
 
-        q.prepare("INSERT INTO MailArchive (MESSAGEID, FROM_NAME, FROM_ADDR, TO_NAME, TO_ADDR, CC, BCC, SUBJECT, CWHEN, CONTENT, COMPRESSED, HASATTACH) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+        q.prepare("INSERT INTO MailArchive (MESSAGEID, FROM_NAME, FROM_ADDR, TO_NAME, TO_ADDR, CC, BCC, SUBJECT, "
+                  "CWHEN, CONTENT, COMPRESSED, HASATTACH) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
         q.addBindValue(msgFile.hash().c_str());
         q.addBindValue(msgFile.senderName().c_str());
         q.addBindValue(msgFile.senderAddress().c_str());
@@ -135,26 +136,25 @@ void MailArchive::archiveMsg(Core::Msg& msgFile)
         q.addBindValue(compressed.data(), QSql::In | QSql::Binary);
         q.addBindValue(msgFile.hasAttachments());
 
-        if(q.exec()) ++transactionCounter;
-        else{
+        if (q.exec())
+            ++transactionCounter;
+        else {
             qDebug() << q.lastError();
             db.close();
             db.open();
         }
-        
+
         qDebug() << q.lastQuery();
-        
-        
-        if(transactionCounter==299u) {
+
+        if (transactionCounter == 299u) {
             db.commit();
-            transactionCounter=0;
-            //try to clear sqlite state...
+            transactionCounter = 0;
+            // try to clear sqlite state...
             q.exec("SELECT MESSAGEID FROM MailArchive LIMIT 1");
             q.next();
             qDebug() << q.value(0).toString();
         }
-    }
-    else{
+    } else {
         qDebug() << "This email already exists into the archive: " << msgFile.hash().c_str();
     }
 }
@@ -172,12 +172,11 @@ void MailArchive::saveMsgAsFile(const QString& messageId, const QString& fileNam
     q.prepare("SELECT COMPRESSED FROM MailArchive WHERE MESSAGEID=?");
     q.addBindValue(messageId);
     q.exec();
-    if(q.next()) {
+    if (q.next()) {
         QByteArray array(q.value(0).toByteArray());
         std::string input(array.data(), array.size());
         Utils::string_decompress_decode_to_file(input, fileName.toStdString());
     }
-
 }
 
 void MailArchive::deleteMsg(const QString& id)
@@ -186,6 +185,6 @@ void MailArchive::deleteMsg(const QString& id)
     q.prepare("DELETE FROM MailArchive WHERE MESSAGEID=?");
     q.addBindValue(id);
     q.exec();
-    //TODO: Delete from folders too.
+    // TODO: Delete from folders too.
     refreshQueries();
 }
