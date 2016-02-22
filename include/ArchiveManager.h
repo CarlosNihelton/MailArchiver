@@ -77,6 +77,11 @@ public:
     MailArchive& current();
 
     /**
+     * Returns a reference to the active archive name member.
+     */
+    const QString& currentName();
+
+    /**
      * Sets the active archive.
      * \param name of the archive as stored into the pool.
      */

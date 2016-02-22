@@ -97,6 +97,7 @@ void MailArchiverWidget::updateViews()
 {
     ui->mailListView->setModel(archiveMgr->current().emails());
     ui->archivesListView->setModel(archiveMgr->model());
+    ui->tabWidget->setTabText(0, archiveMgr->currentName());
 }
 
 void MailArchiverWidget::closeEvent(QCloseEvent* event)
@@ -189,6 +190,26 @@ void MailArchiverWidget::onCustomCtxMenuRequested(QPoint pos)
 // TODO: Implement the next 4 functions.
 void MailArchiverWidget::onActionViewSelected()
 {
+    auto selected = ui->mailListView->selectionModel();
+    auto index = selected->currentIndex();
+    if (index.isValid()) {
+        auto subject = index.data(MailListModel::subjectTextRole).toString();
+        auto header = index.data(MailListModel::messageIdRole).toString();
+        header.prepend(QStringLiteral("Record Locator: {"));
+        header.append(QStringLiteral("}\nFrom: "));
+        header.append(index.data(MailListModel::senderTextRole).toString());
+        header.append(QStringLiteral("\nTo: "));
+        header.append(index.data(MailListModel::receiversRole).toString());
+        header.append(QStringLiteral("\nOn: "));
+        header.append(index.data(MailListModel::whenTextRole).toString());
+        auto body = index.data(MailListModel::bodyTextRole).toString();
+        ui->bodyView->setText(body);
+        ui->tabWidget->setTabText(1, subject);
+        ui->headerView->setText(header);
+
+        ui->tabWidget->setCurrentIndex(1);
+        // TODO: Continue working on this method.
+    }
 }
 
 void MailArchiverWidget::onActionExportSelected()

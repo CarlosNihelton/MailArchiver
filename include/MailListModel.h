@@ -30,9 +30,11 @@ public:
     enum datarole {
         subjectTextRole = Qt::UserRole + 100,
         senderTextRole  = Qt::UserRole + 101,
-        whenTextRole    = Qt::UserRole + 102,
-        hasAttachRole   = Qt::UserRole + 103,
-        messageIdRole   = Qt::UserRole + 104
+        receiversRole = Qt::UserRole + 102,
+        whenTextRole    = Qt::UserRole + 103,
+        hasAttachRole   = Qt::UserRole + 104,
+        messageIdRole   = Qt::UserRole + 105,
+        bodyTextRole    = Qt::UserRole + 106
     };
     MailListModel() = default;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;

@@ -41,7 +41,10 @@ QVariant MailListModel::data(const QModelIndex& index, int role) const
             break;
 
         case senderTextRole:
-            returnVar = record(index.row()).value("CFROM");
+            returnVar = record(index.row()).value("FROM_NAME");
+            break;
+        case receiversRole:
+            returnVar = record(index.row()).value("TO_NAME");
             break;
         case whenTextRole:
             returnVar = record(index.row()).value("CWHEN");
@@ -51,6 +54,9 @@ QVariant MailListModel::data(const QModelIndex& index, int role) const
             break;
         case messageIdRole:
             returnVar = record(index.row()).value("MESSAGEID");
+            break;
+        case bodyTextRole:
+            returnVar = record(index.row()).value("CONTENT");
             break;
         case Qt::DisplayRole:
             returnVar = QVariant();

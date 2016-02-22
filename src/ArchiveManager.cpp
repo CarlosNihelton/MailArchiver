@@ -70,6 +70,11 @@ MailArchive& ArchiveManager::current()
     return m_archivePool.at(m_current.toStdString());
 }
 
+const QString& ArchiveManager::currentName()
+{
+    return m_current;
+}
+
 void ArchiveManager::setCurrent(const QString& name)
 {
     if (m_archivePool.count(name.toStdString())) {
