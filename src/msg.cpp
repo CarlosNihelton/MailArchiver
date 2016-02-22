@@ -1,23 +1,23 @@
-/****************************************************************************
-* Mail Archiver - A solution to store and manage offline e-mail files.      *
-* Copyright (C) 2015-2016 Carlos Nihelton <carlosnsoliveira@gmail.com>      *
-*                                                                           *
-*   This is a free software; you can redistribute it and/or                 *
-*   modify it under the terms of the GNU Library General Public             *
-*   License as published by the Free Software Foundation; either            *
-*   version 2 of the License, or (at your option) any later version.        *
-*                                                                           *
-*   This software  is distributed in the hope that it will be useful,       *
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of          *
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
-*   GNU Library General Public License for more details.                    *
-*                                                                           *
-*   You should have received a copy of the GNU Library General Public       *
-*   License along with this library; see the file COPYING.LIB. If not,      *
-*   write to the Free Software Foundation, Inc., 59 Temple Place,           *
-*   Suite 330, Boston, MA  02111-1307, USA                                  *
-*                                                                           *
-****************************************************************************/
+/**************************************************************************
+* Mail Archiver - A solution to store and manage offline e-mail files.    *
+* Copyright (C) 2015-2016 Carlos Nihelton <carlosnsoliveira@gmail.com>    *
+*                                                                         *
+* This is a free software; you can redistribute it and/or                 *
+* modify it under the terms of the GNU Library General Public             *
+* License as published by the Free Software Foundation; either            *
+* version 2 of the License, or (at your option) any later version.        *
+*                                                                         *
+* This software  is distributed in the hope that it will be useful,       *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of          *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
+* GNU Library General Public License for more details.                    *
+*                                                                         *
+* You should have received a copy of the GNU Library General Public       *
+* License along with this library; see the file COPYING.LIB. If not,      *
+* write to the Free Software Foundation, Inc., 59 Temple Place,           *
+* Suite 330, Boston, MA  02111-1307, USA                                  *
+*                                                                         *
+**************************************************************************/
 
 // std
 #include <iostream>
@@ -247,7 +247,8 @@ const std::string Msg::getDateTimeFromStream(const char* stream)
         int read;
         do {
             read = requested_stream.read(reinterpret_cast<unsigned char*>(&address), 4);
-        } while (read > 0 && address != 0x00390040u && address != 0x0E060040u && address != 0x80080040u);
+        } while (read > 0 && address != 0x00390040u && address != 0x0E060040u
+                 && address != 0x80080040u);
 
         if (address == 0x00390040u || address == 0x0E060040u || address == 0x80080040u) {
             requested_stream.read(reinterpret_cast<unsigned char*>(&address), 4);
@@ -263,16 +264,20 @@ const std::string Msg::getDateTimeFromStream(const char* stream)
             t.tm_min  = 0;
             t.tm_sec  = 0;
 
-            std::time_t pTypTime = std::mktime(&t); // PTypTime() == 01/01/1601 00:00:00.
+            std::time_t pTypTime = std::mktime(&t); // PTypTime() ==
+                                                    // 01/01/1601
+                                                    // 00:00:00.
 
             std::chrono::system_clock::time_point tpDate
-                = (std::chrono::system_clock::from_time_t(pTypTime) + std::chrono::microseconds(microt));
+                = (std::chrono::system_clock::from_time_t(pTypTime)
+                   + std::chrono::microseconds(microt));
             std::time_t ttDate = std::chrono::system_clock::to_time_t(tpDate);
 
             t = *(std::localtime(&ttDate));
 
-            ss << std::setw(4) << std::setfill('0') << t.tm_year + 1900 << '-' << std::setw(2) << std::setfill('0')
-               << t.tm_mon + 1 << '-' << std::setw(2) << std::setfill('0') << t.tm_mday;
+            ss << std::setw(4) << std::setfill('0') << t.tm_year + 1900 << '-' << std::setw(2)
+               << std::setfill('0') << t.tm_mon + 1 << '-' << std::setw(2) << std::setfill('0')
+               << t.tm_mday;
         }
     }
     return ss.str();

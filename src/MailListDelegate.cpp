@@ -1,23 +1,23 @@
-/****************************************************************************
-* Mail Archiver - A solution to store and manage offline e-mail files.      *
-* Copyright (C) 2015-2016 Carlos Nihelton <carlosnsoliveira@gmail.com>      *
-*                                                                           *
-*   This is a free software; you can redistribute it and/or                 *
-*   modify it under the terms of the GNU Library General Public             *
-*   License as published by the Free Software Foundation; either            *
-*   version 2 of the License, or (at your option) any later version.        *
-*                                                                           *
-*   This software  is distributed in the hope that it will be useful,       *
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of          *
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
-*   GNU Library General Public License for more details.                    *
-*                                                                           *
-*   You should have received a copy of the GNU Library General Public       *
-*   License along with this library; see the file COPYING.LIB. If not,      *
-*   write to the Free Software Foundation, Inc., 59 Temple Place,           *
-*   Suite 330, Boston, MA  02111-1307, USA                                  *
-*                                                                           *
-****************************************************************************/
+/**************************************************************************
+* Mail Archiver - A solution to store and manage offline e-mail files.    *
+* Copyright (C) 2015-2016 Carlos Nihelton <carlosnsoliveira@gmail.com>    *
+*                                                                         *
+* This is a free software; you can redistribute it and/or                 *
+* modify it under the terms of the GNU Library General Public             *
+* License as published by the Free Software Foundation; either            *
+* version 2 of the License, or (at your option) any later version.        *
+*                                                                         *
+* This software  is distributed in the hope that it will be useful,       *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of          *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
+* GNU Library General Public License for more details.                    *
+*                                                                         *
+* You should have received a copy of the GNU Library General Public       *
+* License along with this library; see the file COPYING.LIB. If not,      *
+* write to the Free Software Foundation, Inc., 59 Temple Place,           *
+* Suite 330, Boston, MA  02111-1307, USA                                  *
+*                                                                         *
+**************************************************************************/
 
 // Qt
 #include <QPainter>
@@ -34,7 +34,8 @@ MailListDelegate::MailListDelegate()
 {
 }
 
-void MailListDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void MailListDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option,
+                             const QModelIndex& index) const
 {
     QIcon attachIcon;
 
@@ -84,7 +85,8 @@ void MailListDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
     whenRect.setRight(iconRect.right() - 8);
     whenRect.setLeft(subjectRect.right() - fm.width(whenText) - 16);
 
-    painter->drawPixmap(QPoint(iconRect.left() + iconsize.width() / 2 + 2, iconRect.top() + iconsize.height() / 2 + 3),
+    painter->drawPixmap(QPoint(iconRect.left() + iconsize.width() / 2 + 2,
+                               iconRect.top() + iconsize.height() / 2 + 3),
                         attachIcon.pixmap(iconsize.width(), iconsize.height()));
 
     painter->setFont(font);
@@ -104,7 +106,8 @@ QSize MailListDelegate::sizeHint(const QStyleOptionViewItem& option, const QMode
     QString subject = qvariant_cast<QString>(index.data(MailListModel::subjectTextRole));
     QSize size;
     size.setWidth(metric.width(subject) + 4 + hasatt.actualSize(option.decorationSize).width());
-    size.setHeight(qMax(2 * metric.height(), hasatt.actualSize(option.decorationSize).height()) + 8);
+    size.setHeight(qMax(2 * metric.height(), hasatt.actualSize(option.decorationSize).height())
+                   + 8);
     return size;
 }
 
