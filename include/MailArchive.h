@@ -36,7 +36,7 @@
 
 class MailArchive
 {
-private:
+  private:
     unsigned int transactionCounter;
 
     QString baseFileName;
@@ -50,10 +50,12 @@ private:
 
     QSqlDatabase db;
 
-public:
+  public:
     void refreshQueries();
 
-public:
+    enum class SearchPattern { NoSearch, FullMessage, Body, Subject, From, To };
+
+  public:
     MailArchive() = default;
     explicit MailArchive(const QString& filename);
     void openFile(const QString& filename);
@@ -70,6 +72,7 @@ public:
 
     void setActiveFolder(const QString& af);
     void setActiveTag(const QString& at);
+    void setSearchFilter(const QString& like, SearchPattern pattern);
 
     void archiveMsg(Core::Msg& msgFile);
     void archiveFolder(const QString& folder);

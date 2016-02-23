@@ -84,6 +84,6 @@ void ArchiveManager::setCurrent(const QString& name)
 
 QStringListModel* ArchiveManager::model()
 {
-    QStringListModel* ret{ &m_model };
+    QStringListModel* ret{&m_model};
     return ret;
 }

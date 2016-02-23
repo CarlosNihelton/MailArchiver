@@ -1,5 +1,5 @@
 ---
-BasedOnStyle: WebKit
+BasedOnStyle: LLVM
 Language:        Cpp
 AlignAfterOpenBracket: true
 AlignConsecutiveAssignments: true
@@ -9,7 +9,7 @@ AlwaysBreakTemplateDeclarations: true
 AllowShortFunctionsOnASingleLine: Inline
 AllowShortLoopsOnASingleLine: true
 BreakBeforeBraces: Linux
-ColumnLimit: 100
+ColumnLimit: 110
 Standard:        Cpp11
 IndentWidth:     4
 TabWidth:        8

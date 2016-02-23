@@ -28,9 +28,7 @@
 #include "MailListDelegate.h"
 #include "MailListModel.h"
 
-MailListDelegate::MailListDelegate()
-    : hasatt(":/hasatt")
-    , noatt(":/noatt")
+MailListDelegate::MailListDelegate() : hasatt(":/hasatt"), noatt(":/noatt")
 {
 }
 
@@ -85,9 +83,9 @@ void MailListDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
     whenRect.setRight(iconRect.right() - 8);
     whenRect.setLeft(subjectRect.right() - fm.width(whenText) - 16);
 
-    painter->drawPixmap(QPoint(iconRect.left() + iconsize.width() / 2 + 2,
-                               iconRect.top() + iconsize.height() / 2 + 3),
-                        attachIcon.pixmap(iconsize.width(), iconsize.height()));
+    painter->drawPixmap(
+        QPoint(iconRect.left() + iconsize.width() / 2 + 2, iconRect.top() + iconsize.height() / 2 + 3),
+        attachIcon.pixmap(iconsize.width(), iconsize.height()));
 
     painter->setFont(font);
     painter->drawText(subjectRect, Qt::AlignLeft, subjectText);
@@ -106,8 +104,7 @@ QSize MailListDelegate::sizeHint(const QStyleOptionViewItem& option, const QMode
     QString subject = qvariant_cast<QString>(index.data(MailListModel::subjectTextRole));
     QSize size;
     size.setWidth(metric.width(subject) + 4 + hasatt.actualSize(option.decorationSize).width());
-    size.setHeight(qMax(2 * metric.height(), hasatt.actualSize(option.decorationSize).height())
-                   + 8);
+    size.setHeight(qMax(2 * metric.height(), hasatt.actualSize(option.decorationSize).height()) + 8);
     return size;
 }
 

@@ -23,7 +23,7 @@
 
 class QueryStrings
 {
-public:
+  public:
     static const QString SelectAllFolders;
     static const QString SelectAllTags;
     static const QString SelectAllEmails;
@@ -37,19 +37,25 @@ public:
     static const QString TryClearSQLiteState;
     static const QString SelectCompressedContents;
     static const QString DeleteMail;
+
+    static const QString SearchFullPattern;
+    static const QString SearchBodyPattern;
+    static const QString SearchSubjectPattern;
+    static const QString SearchFromPattern;
+    static const QString SearchToPattern;
 };
 
 const QString QueryStrings::SelectAllFolders = QStringLiteral("SELECT * FROM MailFolders");
 const QString QueryStrings::SelectAllTags    = QStringLiteral("SELECT * FROM MailTags");
-const QString QueryStrings::SelectAllEmails  = QStringLiteral("SELECT * FROM MailArchive");
-const QString QueryStrings::CreateMailArchiveTable
-    = QStringLiteral("CREATE TABLE IF NOT EXISTS MailArchive ("
-                     "MESSAGEID VARCHAR(32) PRIMARY KEY NOT NULL, "
-                     "FROM_NAME TEXT, FROM_ADDR TEXT, "
-                     "TO_NAME TEXT, TO_ADDR TEXT, "
-                     "CC TEXT, BCC TEXT, SUBJECT TEXT, "
-                     "CWHEN DATE, CONTENT TEXT, "
-                     "COMPRESSED BLOB, HASATTACH BOOL)");
+const QString QueryStrings::SelectAllEmails = QStringLiteral("SELECT * FROM MailArchive");
+const QString QueryStrings::CreateMailArchiveTable =
+    QStringLiteral("CREATE TABLE IF NOT EXISTS MailArchive ("
+                   "MESSAGEID VARCHAR(32) PRIMARY KEY NOT NULL, "
+                   "FROM_NAME TEXT, FROM_ADDR TEXT, "
+                   "TO_NAME TEXT, TO_ADDR TEXT, "
+                   "CC TEXT, BCC TEXT, SUBJECT TEXT, "
+                   "CWHEN DATE, CONTENT TEXT, "
+                   "COMPRESSED BLOB, HASATTACH BOOL)");
 
 const QString QueryStrings::CreateFoldersTable = QStringLiteral("CREATE TABLE IF NOT EXISTS "
                                                                 "MailFolders (FID INTEGER PRIMARY "
@@ -58,10 +64,10 @@ const QString QueryStrings::CreateFoldersTable = QStringLiteral("CREATE TABLE IF
 const QString QueryStrings::CreateTagsTable = QStringLiteral("CREATE TABLE IF NOT EXISTS "
                                                              "MailTags (TID INTEGER PRIMARY KEY "
                                                              "NO NULL, TNAME TEXT NOT NULL)");
-const QString QueryStrings::CreateFolderRelsTable
-    = QStringLiteral("CREATE TABLE IF NOT EXISTS FolderRels (FRELID "
-                     "INTEGER PRIMARY KEY NOT NULL, FID INTEGER NOT "
-                     "NULL, MID VARCHAR(32) NOT NULL)");
+const QString QueryStrings::CreateFolderRelsTable =
+    QStringLiteral("CREATE TABLE IF NOT EXISTS FolderRels (FRELID "
+                   "INTEGER PRIMARY KEY NOT NULL, FID INTEGER NOT "
+                   "NULL, MID VARCHAR(32) NOT NULL)");
 const QString QueryStrings::CreateTagRelsTable = QStringLiteral("CREATE TABLE IF NOT EXISTS "
                                                                 "TagRels (TRELID INTEGER PRIMARY "
                                                                 "KEY NOT NULL, TID "
@@ -69,15 +75,23 @@ const QString QueryStrings::CreateTagRelsTable = QStringLiteral("CREATE TABLE IF
                                                                 "MID VARCHAR(32) NOT NULL)");
 const QString QueryStrings::SelectCountOfMails = QStringLiteral("SELECT COUNT(MESSAGEID) FROM "
                                                                 "MailArchive WHERE MESSAGEID=?");
-const QString QueryStrings::InsertNewMail
-    = QStringLiteral("INSERT INTO MailArchive (MESSAGEID, FROM_NAME, "
-                     "FROM_ADDR, TO_NAME, TO_ADDR, CC, BCC, SUBJECT, "
-                     "CWHEN, CONTENT, COMPRESSED, HASATTACH) VALUES "
-                     "(?,?,?,?,?,?,?,?,?,?,?,?)");
-const QString QueryStrings::TryClearSQLiteState
-    = QStringLiteral("SELECT MESSAGEID FROM MailArchive LIMIT 1");
-const QString QueryStrings::SelectCompressedContents
-    = QStringLiteral("SELECT COMPRESSED FROM "
-                     "MailArchive WHERE MESSAGEID=?");
-const QString QueryStrings::DeleteMail
-    = QStringLiteral("DELETE FROM MailArchive WHERE MESSAGEID=?");
+const QString QueryStrings::InsertNewMail = QStringLiteral("INSERT INTO MailArchive (MESSAGEID, FROM_NAME, "
+                                                           "FROM_ADDR, TO_NAME, TO_ADDR, CC, BCC, SUBJECT, "
+                                                           "CWHEN, CONTENT, COMPRESSED, HASATTACH) VALUES "
+                                                           "(?,?,?,?,?,?,?,?,?,?,?,?)");
+const QString QueryStrings::TryClearSQLiteState      = QStringLiteral("SELECT MESSAGEID FROM MailArchive LIMIT 1");
+const QString QueryStrings::SelectCompressedContents = QStringLiteral("SELECT COMPRESSED FROM "
+                                                                      "MailArchive WHERE MESSAGEID=?");
+const QString QueryStrings::DeleteMail        = QStringLiteral("DELETE FROM MailArchive WHERE MESSAGEID=?");
+const QString QueryStrings::SearchFullPattern = QStringLiteral(
+    "SELECT * FROM MailArchive WHERE FROM_NAME like '%1' or FROM_ADDR like '%1' or TO_NAME like '%1' or "
+    "TO_ADDR like '%1' or CC like '%1' or BCC like '%1' or SUBJECT like '%1' or CONTENT like '%1'");
+const QString QueryStrings::SearchBodyPattern =
+    QStringLiteral("SELECT * FROM MailArchive WHERE CONTENT like '%1'");
+const QString QueryStrings::SearchSubjectPattern =
+    QStringLiteral("SELECT * FROM MailArchive WHERE SUBJECT like '%1'");
+const QString QueryStrings::SearchFromPattern =
+    QStringLiteral("SELECT * FROM MailArchive WHERE FROM_NAME like '%1' or FROM_ADDR like '%1'");
+const QString QueryStrings::SearchToPattern =
+    QStringLiteral("SELECT * FROM MailArchive WHERE TO_NAME like '%1' or TO_ADDR like '%1' or CC like '%1' "
+                   "or BCC like '%1'");

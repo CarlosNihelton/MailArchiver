@@ -31,7 +31,7 @@
 class SingleApp
 {
 
-public:
+  public:
     SingleApp(int& argc, char** argv);
     int exec() { return theApp.exec(); }
     static void sigsegvHandler(int signum)
@@ -49,7 +49,7 @@ public:
     SingleApp(SingleApp&&) = delete;
     SingleApp& operator=(SingleApp&&) = delete;
 
-private:
+  private:
     static QSharedMemory m_sharedMem;
     QApplication theApp;
 };

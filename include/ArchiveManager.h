@@ -34,7 +34,7 @@
 
 class ArchiveManager
 {
-public:
+  public:
     /**
     * Meyers Singleton design.
     *
@@ -122,7 +122,7 @@ public:
      */
     ~ArchiveManager() = default;
 
-private:
+  private:
     /**
      * Default constructor is private.
      */

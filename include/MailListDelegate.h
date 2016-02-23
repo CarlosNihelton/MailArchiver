@@ -28,7 +28,7 @@ class QIcon;
 
 class MailListDelegate : public QStyledItemDelegate
 {
-public:
+  public:
     MailListDelegate();
     virtual ~MailListDelegate();
 
@@ -37,7 +37,7 @@ public:
 
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
-private:
+  private:
     QIcon hasatt, noatt;
 };
 

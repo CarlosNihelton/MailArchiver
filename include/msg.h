@@ -33,7 +33,7 @@ namespace Core
 
 class Msg
 {
-private:
+  private:
     POLE::Storage* m_File;
     bool m_Opened;
     std::string m_FileName;
@@ -47,12 +47,12 @@ private:
     std::string m_hash;
     bool m_hasAttachments;
 
-protected:
+  protected:
     const std::string getDateTimeFromStream(const char* stream);
     const std::string getStringFromStream(const char* stream);
     void visit(int indent, POLE::Storage* storage, std::string path);
 
-public:
+  public:
     Msg();
     explicit Msg(const std::string& filename);
 

@@ -39,8 +39,7 @@
 #include "MailArchive.h"
 #include "QueryStrings.h"
 
-MailArchive::MailArchive(const QString& filename)
-    : transactionCounter{ 0 }
+MailArchive::MailArchive(const QString& filename) : transactionCounter{0}
 {
     openFile(filename);
     m_Folders = std::make_unique<QSqlQueryModel>();
@@ -90,6 +89,36 @@ void MailArchive::setActiveFolder(const QString& af)
 void MailArchive::setActiveTag(const QString& at)
 {
     m_ActiveTag = at;
+}
+
+void MailArchive::setSearchFilter(const QString& like, SearchPattern pattern)
+{
+
+    switch (pattern) {
+    case SearchPattern::FullMessage:
+        m_Emails->setQuery(QueryStrings::SearchFullPattern.arg(like), db);
+        break;
+
+    case SearchPattern::Body:
+        m_Emails->setQuery(QueryStrings::SearchBodyPattern.arg(like), db);
+        break;
+
+    case SearchPattern::Subject:
+        m_Emails->setQuery(QueryStrings::SearchSubjectPattern.arg(like), db);
+        break;
+
+    case SearchPattern::From:
+        m_Emails->setQuery(QueryStrings::SearchFromPattern.arg(like), db);
+        break;
+
+    case SearchPattern::To:
+        m_Emails->setQuery(QueryStrings::SearchToPattern.arg(like), db);
+        break;
+
+    default:
+        m_Emails->setQuery(QueryStrings::SelectAllEmails, db);
+        break;
+    }
 }
 
 void MailArchive::archiveFolder(const QString& folder)

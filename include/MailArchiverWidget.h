@@ -38,27 +38,22 @@ class QKeyEvent;
 
 class MailArchiverWidget : public QMainWindow
 {
-public:
+  public:
     MailArchiverWidget();
     virtual ~MailArchiverWidget();
     static const int ExitCodeRestartApp = -54321;
 
-protected:
+  protected:
     void createConnections();
     void createCtxMenu();
     void updateViews();
-    // Due to a bug in Qt5, we cannot destroy an
-    // QSqlDatabase too later, because the driver might
-    // be
-    // already unloaded,
-    // which will result in a SIGSEGV. For this reason I
-    // reimplemented the closeEvent to destroy the
-    // Archiver Manager
-    // and all members.
+    // Due to a bug in Qt5, we cannot destroy an QSqlDatabase too later, because the driver might be
+    // already unloaded, which will result in a SIGSEGV. For this reason I reimplemented the
+    // closeEvent to destroy the Archiver Manager and all members.
     void closeEvent(QCloseEvent* event);
     void keyPressEvent(QKeyEvent* event);
 
-protected slots:
+  protected slots:
     // Actions
     void onEditTags();
     void onEditFolders();
@@ -70,6 +65,8 @@ protected slots:
     void onOpenArchive();
     void onArchiveEmails();
     void onArchiveEntireFolder();
+    void onSearchButtonClicked();
+    void onSearchLineChanged(const QString& text);
 
     void onSelectedOpenedArchive(const QModelIndex& index);
     void onSelectedFolderOnCurrentArchive(const QModelIndex& index);
@@ -84,7 +81,7 @@ protected slots:
     // slot for restarting the application.
     void onRestartApplication();
 
-private:
+  private:
     QMenu* ctxMenu;
     Ui::MailArchiverWidget* ui;
     MailListDelegate* delegate;

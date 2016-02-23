@@ -21,10 +21,9 @@
 
 #include "SingleApp.h"
 
-QSharedMemory SingleApp::m_sharedMem{ "org.olivec.MailArchiverApp" };
+QSharedMemory SingleApp::m_sharedMem{"org.olivec.MailArchiverApp"};
 
-SingleApp::SingleApp(int& argc, char** argv)
-    : theApp(argc, argv)
+SingleApp::SingleApp(int& argc, char** argv) : theApp(argc, argv)
 {
     std::signal(SIGSEGV, SingleApp::sigsegvHandler);
 

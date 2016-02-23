@@ -26,7 +26,7 @@
 
 class MailListModel : public QSqlQueryModel
 {
-public:
+  public:
     enum datarole {
         subjectTextRole = Qt::UserRole + 100,
         senderTextRole  = Qt::UserRole + 101,

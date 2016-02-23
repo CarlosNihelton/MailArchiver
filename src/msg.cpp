@@ -39,16 +39,11 @@ namespace Core
 {
 
 // Cosntructors:
-Msg::Msg()
-    : m_File(nullptr)
-    , m_Opened(false)
+Msg::Msg() : m_File(nullptr), m_Opened(false)
 {
 }
 
-Msg::Msg(const std::string& filename)
-    : m_File(nullptr)
-    , m_Opened(false)
-    , m_FileName(filename)
+Msg::Msg(const std::string& filename) : m_File(nullptr), m_Opened(false), m_FileName(filename)
 {
     open(filename.c_str());
 }
@@ -247,8 +242,7 @@ const std::string Msg::getDateTimeFromStream(const char* stream)
         int read;
         do {
             read = requested_stream.read(reinterpret_cast<unsigned char*>(&address), 4);
-        } while (read > 0 && address != 0x00390040u && address != 0x0E060040u
-                 && address != 0x80080040u);
+        } while (read > 0 && address != 0x00390040u && address != 0x0E060040u && address != 0x80080040u);
 
         if (address == 0x00390040u || address == 0x0E060040u || address == 0x80080040u) {
             requested_stream.read(reinterpret_cast<unsigned char*>(&address), 4);
@@ -268,16 +262,14 @@ const std::string Msg::getDateTimeFromStream(const char* stream)
                                                     // 01/01/1601
                                                     // 00:00:00.
 
-            std::chrono::system_clock::time_point tpDate
-                = (std::chrono::system_clock::from_time_t(pTypTime)
-                   + std::chrono::microseconds(microt));
+            std::chrono::system_clock::time_point tpDate =
+                (std::chrono::system_clock::from_time_t(pTypTime) + std::chrono::microseconds(microt));
             std::time_t ttDate = std::chrono::system_clock::to_time_t(tpDate);
 
             t = *(std::localtime(&ttDate));
 
             ss << std::setw(4) << std::setfill('0') << t.tm_year + 1900 << '-' << std::setw(2)
-               << std::setfill('0') << t.tm_mon + 1 << '-' << std::setw(2) << std::setfill('0')
-               << t.tm_mday;
+               << std::setfill('0') << t.tm_mon + 1 << '-' << std::setw(2) << std::setfill('0') << t.tm_mday;
         }
     }
     return ss.str();
@@ -316,19 +308,13 @@ Msg::~Msg()
 
 // Move semantics
 Msg::Msg(Msg&& rhs)
-    : m_Opened(std::move(rhs.m_Opened))
-    , m_FileName(std::move(rhs.m_FileName))
-    , m_SenderName(std::move(rhs.m_SenderName))
-    , m_SenderAddress(std::move(rhs.m_SenderAddress))
-    , m_ReceiversNames(std::move(rhs.m_ReceiversNames))
-    , m_ReceiversAddresses(std::move(rhs.m_ReceiversAddresses))
-    , m_Subject(std::move(rhs.m_Subject))
-    , m_CC(std::move(rhs.m_CC))
-    , m_Bcc(std::move(rhs.m_Bcc))
-    , m_date(std::move(rhs.m_date))
-    , m_body(std::move(rhs.m_body))
-    , m_hash(std::move(rhs.m_hash))
-    , m_hasAttachments(std::move(rhs.m_hasAttachments))
+    : m_Opened(std::move(rhs.m_Opened)), m_FileName(std::move(rhs.m_FileName)),
+      m_SenderName(std::move(rhs.m_SenderName)), m_SenderAddress(std::move(rhs.m_SenderAddress)),
+      m_ReceiversNames(std::move(rhs.m_ReceiversNames)),
+      m_ReceiversAddresses(std::move(rhs.m_ReceiversAddresses)), m_Subject(std::move(rhs.m_Subject)),
+      m_CC(std::move(rhs.m_CC)), m_Bcc(std::move(rhs.m_Bcc)), m_date(std::move(rhs.m_date)),
+      m_body(std::move(rhs.m_body)), m_hash(std::move(rhs.m_hash)),
+      m_hasAttachments(std::move(rhs.m_hasAttachments))
 {
     m_File     = rhs.m_File;
     rhs.m_File = nullptr;

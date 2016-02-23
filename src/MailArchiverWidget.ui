@@ -115,9 +115,6 @@ border-style: solid;
              </property>
             </widget>
            </item>
-           <item row="0" column="1" colspan="6">
-            <widget class="QLineEdit" name="searchEdit"/>
-           </item>
            <item row="0" column="0">
             <widget class="QToolButton" name="lock">
              <property name="text">
@@ -128,29 +125,6 @@ border-style: solid;
                <normaloff>:/lock</normaloff>:/lock</iconset>
              </property>
              <property name="checkable">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="7">
-            <widget class="QPushButton" name="more">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>More</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../res/MailArchiverWidget.qrc">
-               <normaloff>:/more</normaloff>:/more</iconset>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="flat">
               <bool>true</bool>
              </property>
             </widget>
@@ -200,6 +174,19 @@ border-style: solid;
               </size>
              </property>
             </spacer>
+           </item>
+           <item row="0" column="1" colspan="6">
+            <widget class="QLineEdit" name="searchEdit"/>
+           </item>
+           <item row="0" column="7">
+            <widget class="QPushButton" name="searchButton">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Search!</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -491,6 +478,22 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>452</x>
      <y>280</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>searchEdit</sender>
+   <signal>returnPressed()</signal>
+   <receiver>searchButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>452</x>
+     <y>107</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>876</x>
+     <y>104</y>
     </hint>
    </hints>
   </connection>
