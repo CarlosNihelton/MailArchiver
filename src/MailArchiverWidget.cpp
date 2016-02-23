@@ -22,6 +22,7 @@
 #include <future>
 
 // Qt
+#include <QKeyEvent>
 #include <QCloseEvent>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -113,6 +114,28 @@ void MailArchiverWidget::closeEvent(QCloseEvent* event)
 {
     Q_UNUSED(event);
     archiveMgr->hardCloseAll();
+}
+
+// TODO: Subclass QListView for handling this event by itself;
+void MailArchiverWidget::keyPressEvent(QKeyEvent* event)
+{
+    if (ui->mailListView->hasFocus()) {
+        switch (event->key()) {
+        case Qt::Key_Delete:
+            auto selected = ui->mailListView->selectionModel();
+            auto model = selected->model();
+            if (selected->currentIndex().isValid()) {
+                int currentRow = selected->currentIndex().row();
+                QString id = model->data(model->index(currentRow, 0), MailListModel::messageIdRole)
+                                 .toString();
+                archiveMgr->current().deleteMsg(id);
+            }
+            break;
+        }
+
+    } else {
+        QMainWindow::keyPressEvent(event);
+    }
 }
 
 void MailArchiverWidget::onOpenArchive()

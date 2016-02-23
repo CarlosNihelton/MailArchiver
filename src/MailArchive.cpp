@@ -74,8 +74,12 @@ void MailArchive::openFile(const QString& filename)
 
 void MailArchive::refreshQueries()
 {
-    m_Emails->setQuery(m_Emails->query());
-    m_Folders->setQuery(m_Folders->query());
+    QString query = m_Emails->query().lastQuery();
+    m_Emails->setQuery("", db);
+    m_Emails->setQuery(query, db);
+    query = m_Folders->query().lastQuery();
+    m_Folders->setQuery("", db);
+    m_Folders->setQuery(query, db);
 }
 
 void MailArchive::setActiveFolder(const QString& af)

@@ -34,6 +34,7 @@ class MailArchive;
 class MailListDelegate;
 class MailListModel;
 class QModelIndex;
+class QKeyEvent;
 
 class MailArchiverWidget : public QMainWindow
 {
@@ -55,6 +56,7 @@ protected:
     // Archiver Manager
     // and all members.
     void closeEvent(QCloseEvent* event);
+    void keyPressEvent(QKeyEvent* event);
 
 protected slots:
     // Actions
