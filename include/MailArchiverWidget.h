@@ -66,6 +66,7 @@ class MailArchiverWidget : public QMainWindow
     void onArchiveEmails();
     void onArchiveEntireFolder();
     void onSearchButtonClicked();
+    void onButtonGroupPressed(int id);
     void onSearchLineChanged(const QString& text);
 
     void onSelectedOpenedArchive(const QModelIndex& index);

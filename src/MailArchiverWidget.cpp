@@ -85,8 +85,8 @@ void MailArchiverWidget::createConnections()
     connect(ui->foldersTreeView, &QListView::clicked, this,
             &MailArchiverWidget::onSelectedFolderOnCurrentArchive);
     connect(ui->searchEdit, &QLineEdit::textChanged, this, &MailArchiverWidget::onSearchLineChanged);
-
     connect(ui->searchButton, &QPushButton::clicked, this, &MailArchiverWidget::onSearchButtonClicked);
+    connect(ui->buttonGroup, SIGNAL(buttonPressed(int)), this, SLOT(onButtonGroupPressed(int)));
 }
 
 MailArchiverWidget::~MailArchiverWidget()
@@ -200,9 +200,9 @@ void MailArchiverWidget::onSelectedOpenedArchive(const QModelIndex& index)
 
 void MailArchiverWidget::onSearchButtonClicked()
 {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     if (ui->full->isChecked()) {
-        archiveMgr->current().setSearchFilter(ui->searchEdit->text(),
-                                              MailArchive::SearchPattern::FullMessage);
+        archiveMgr->current().setSearchFilter(ui->searchEdit->text(),                                              MailArchive::SearchPattern::FullMessage);
     } else if (ui->body->isChecked()) {
         archiveMgr->current().setSearchFilter(ui->searchEdit->text(), MailArchive::SearchPattern::Body);
     } else if (ui->subject->isChecked()) {
@@ -215,12 +215,25 @@ void MailArchiverWidget::onSearchButtonClicked()
         ui->searchEdit->setText(QString());
         archiveMgr->current().setSearchFilter(ui->searchEdit->text(), MailArchive::SearchPattern::NoSearch);
     }
+    QApplication::restoreOverrideCursor();
 }
 
 void MailArchiverWidget::onSearchLineChanged(const QString& text)
 {
-    if (!archiveMgr->currentName().isEmpty())
-        ui->searchButton->setEnabled(text.length() > 3);
+    if(text.isEmpty()){
+        for(auto& m : archiveMgr->archivePool()){
+            m.second.setSearchFilter(ui->searchEdit->text(), MailArchive::SearchPattern::NoSearch);
+        }        
+        ui->searchButton->setEnabled(false);
+    } else {
+        if (!archiveMgr->currentName().isEmpty())
+            ui->searchButton->setEnabled( (ui->buttonGroup->checkedId()!=-1) && (text.length() > 3));
+    }
+    
+}
+
+void MailArchiverWidget::onButtonGroupPressed(int id){
+    ui->searchButton->setEnabled( (id=-1) && (ui->searchEdit->text().length() > 3));
 }
 
 void MailArchiverWidget::onSelectedFolderOnCurrentArchive(const QModelIndex& index)
@@ -257,7 +270,6 @@ void MailArchiverWidget::onActionViewSelected()
         ui->headerView->setText(header);
 
         ui->tabWidget->setCurrentIndex(1);
-        // TODO: Continue working on this method.
     }
 }
 
